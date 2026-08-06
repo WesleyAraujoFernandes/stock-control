@@ -1,0 +1,15 @@
+<div class="flex min-h-screen flex-col">
+
+  <app-header (toggleSidebar)="toggleSidebar()" />
+
+  <div class="flex flex-1">
+
+    <app-sidebar [expanded]="sidebarExpanded()" />
+
+    <app-main class="flex-1" />
+
+  </div>
+
+  <app-footer />
+
+</div>
