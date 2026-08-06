@@ -1,26 +1,21 @@
 :root {
-
+  /* Cores principais */
   --color-primary: #2563eb;
-  --color-primary-dark: #1d4ed8;
+  --color-primary-hover: #1d4ed8;
 
+  /* Estados */
   --color-success: #16a34a;
-
   --color-warning: #f59e0b;
-
   --color-danger: #dc2626;
 
-  --color-background: #f5f7fb;
-
+  /* Superfícies */
+  --color-background: #f8fafc;
   --color-surface: #ffffff;
 
-  --color-border: #e5e7eb;
+  /* Bordas */
+  --color-border: #e2e8f0;
 
-  --color-text: #1f2937;
-
-  --sidebar-width: 270px;
-
-  --header-height: 72px;
-
-  --radius: 10px;
-
+  /* Texto */
+  --color-text: #1e293b;
+  --color-text-muted: #64748b;
 }
