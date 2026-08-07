@@ -21,7 +21,9 @@ export class ProductForm {
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(120)]],
     sku: ['', [Validators.required, Validators.maxLength(30)]],
-    category: ['', [Validators.required]]
+    category: ['', [Validators.required]],
+    quantity: [1, [Validators.required, Validators.min(0)]],
+    minimumStock: [1, [Validators.required, Validators.min(0)]],
   })
 
   save(): void {
