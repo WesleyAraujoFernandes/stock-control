@@ -1,19 +1,43 @@
 <form [formGroup]="form" (ngSubmit)="save()" class="space-y-6">
   <div>
-    <label for="name" class="mb-2 block text-sm font-medium">
+    <label for="name" [class]="labelClasses">
       Nome do Produto
     </label>
     <input id="name" type="text" formControlName="name"
-      class="w-full rounded-lg border border-slate-300 px-4 py-2 outline-none focus:border-blue-500">
+      [class]="fieldClasses">
+    @if (form.controls.name.invalid && form.controls.name.touched) {
+    <p [class]="errorClasses">
+      Informe o nome do produto.
+    </p>
+    }
+  </div>
+  <div>
+    <label for="sku" [class]="labelClasses">SKU</label>
+    <input type="text" name="sku" id="sku" formControlName="sku"
+      [class]="fieldClasses">
+    @if (form.controls.sku.invalid && form.controls.sku.touched) {
+    <p [class]="errorClasses">
+      Informe o SKU.
+    </p>
+    }
+  </div>
+  <div>
+    <label for="category" [class]="labelClasses">
+      Categoria
+    </label>
+    <input type="text" name="category" id="category" formControlName="category"
+      [class]="fieldClasses">
+    @if (form.controls.category.invalid && form.controls.category.touched) {
+      <p [class]="errorClasses">
+        Informe a categoria.
+      </p>
+    }
   </div>
   <div class="flex justify-end gap-3">
-    <app-button
-      variant="secondary"
-      type="button"
-    >
+    <app-button variant="secondary" type="button">
       Cancelar
     </app-button>
-    <app-button type="submit">
+    <app-button type="submit" [disabled]="form.invalid">
       Salvar
     </app-button>
   </div>
