@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PageHeader } from "../page-header/page-header";
-import { StatCard } from "../stat-card/stat-card";
+import { StatCard } from "../../components/stat-card/stat-card";
 import { Card } from "../card/card/card";
 import { CardHeader } from "../card/card-header/card-header";
 import { CardContent } from "../card/card-content/card-content";

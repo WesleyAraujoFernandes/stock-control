@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
-import { Card } from '../card/card/card';
-import { CardHeader } from '../card/card-header/card-header';
-import { CardContent } from '../card/card-content/card-content';
+import { Card } from '../../ui/card/card/card';
+import { CardHeader } from '../../ui/card/card-header/card-header';
+import { CardContent } from '../../ui/card/card-content/card-content';
 import { STAT_CARD_VALUE_CLASSES } from './stat-card.types';
 
 @Component({
