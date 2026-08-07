@@ -1,7 +1,9 @@
+import { CreateProductRequest } from './../../models/create-product.request';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Button } from '../../../../shared/ui/button/button/button';
 import { ERROR_CLASSES, FORM_FIELD_CLASSES, LABEL_CLASSES } from './product-form.style';
+import { ProductStore } from '../../store/product.store';
 
 @Component({
   selector: 'app-product-form',
@@ -13,6 +15,7 @@ import { ERROR_CLASSES, FORM_FIELD_CLASSES, LABEL_CLASSES } from './product-form
   styleUrl: './product-form.css',
 })
 export class ProductForm {
+  private readonly productStore = inject(ProductStore)
   private readonly fb = inject(FormBuilder);
   readonly fieldClasses = FORM_FIELD_CLASSES;
   readonly labelClasses = LABEL_CLASSES;
@@ -24,9 +27,19 @@ export class ProductForm {
     category: ['', [Validators.required]],
     quantity: [1, [Validators.required, Validators.min(0)]],
     minimumStock: [1, [Validators.required, Validators.min(0)]],
+    unitPrice: [0, [Validators.required, Validators.min(0)]],
+    active: [true, [Validators.required]],
+    createdAt: [new Date(), [Validators.required]],
+    updatedAt: [new Date(), [Validators.required]]
   })
 
   save(): void {
-    console.log(this.form.getRawValue());
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const request: CreateProductRequest = this.form.getRawValue();
+    const product = this.productStore.create(request);
+    console.log('Produto criado:', product);
   }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Product } from '../models/product.model';
+import { CreateProductRequest } from '../models/create-product.request';
 
 @Injectable({
   providedIn: 'root'
@@ -7,6 +8,16 @@ import { Product } from '../models/product.model';
 export class ProductService {
 
   constructor() { }
+
+  create(request: CreateProductRequest): Product {
+    return {
+      id: crypto.randomUUID(),
+      ...request,
+      active: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+  }
 
   getProducts(): Product[] {
     return [
