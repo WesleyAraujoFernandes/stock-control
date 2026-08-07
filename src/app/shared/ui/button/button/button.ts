@@ -25,6 +25,8 @@ export class Button {
 
   readonly disabled = input(false);
 
+  readonly type = input<'button' | 'submit' | 'reset'>('button');
+
   readonly classes = computed(() => {
 
     const disabledClasses = this.disabled()

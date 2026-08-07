@@ -1,1 +1,20 @@
-<p>product-form works!</p>
+<form [formGroup]="form" (ngSubmit)="save()" class="space-y-6">
+  <div>
+    <label for="name" class="mb-2 block text-sm font-medium">
+      Nome do Produto
+    </label>
+    <input id="name" type="text" formControlName="name"
+      class="w-full rounded-lg border border-slate-300 px-4 py-2 outline-none focus:border-blue-500">
+  </div>
+  <div class="flex justify-end gap-3">
+    <app-button
+      variant="secondary"
+      type="button"
+    >
+      Cancelar
+    </app-button>
+    <app-button type="submit">
+      Salvar
+    </app-button>
+  </div>
+</form>
