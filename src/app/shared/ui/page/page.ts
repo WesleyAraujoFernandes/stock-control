@@ -1,16 +1,12 @@
-import { Component } from '@angular/core';
-import { PageHeader } from "../page-header/page-header";
-import { StatCard } from "../../components/stat-card/stat-card";
-import { Card } from "../card/card/card";
-import { CardHeader } from "../card/card-header/card-header";
-import { CardContent } from "../card/card-content/card-content";
+import { Component, computed } from '@angular/core';
+import { PAGE_CLASSES } from './page.style';
 
 @Component({
   selector: 'app-page',
-  imports: [PageHeader, StatCard, Card, CardHeader, CardContent],
+  imports: [],
   templateUrl: './page.html',
   styleUrl: './page.css',
 })
 export class Page {
-
+  readonly classes = computed(() => PAGE_CLASSES);
 }

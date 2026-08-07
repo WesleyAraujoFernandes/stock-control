@@ -1,0 +1,14 @@
+<div class="space-y-4">
+  @for (product of products(); track product.id) {
+    <app-card>
+      <app-card-header>
+        {{ product.name }}
+      </app-card-header>
+      <app-card-content>
+        <p><strong>SKU:</strong>{{ product.sku }}</p>
+        <p><strong>Categoria:</strong>{{ product.category }}</p>
+        <p><strong>Quantidade:</strong>{{ product.quantity }}</p>
+      </app-card-content>
+    </app-card>
+  }
+</div>

@@ -1,0 +1,31 @@
+<app-page>
+  <app-page-header>
+    <div>
+      <h1 class="text-3xl font-bold">
+        Produtos
+      </h1>
+      <p class="text-slate-500">
+        Gerencie os produtos do estoque.
+      </p>
+    </div>
+    <app-button (click)="newProduct()">
+      Novo Produto
+    </app-button>
+  </app-page-header>
+  <app-page-content>
+    <app-card>
+      <app-card-header>
+        Produtos cadastrados
+      </app-card-header>
+      <app-card-content>
+        @if(!store.hasProducts()) {
+          <app-product-list [products]="store.products()"></app-product-list>
+        } @else {
+          <app-empty-state>
+            Nenhum produto cadastrado.
+          </app-empty-state>
+        }
+      </app-card-content>
+    </app-card>
+  </app-page-content>
+</app-page>
