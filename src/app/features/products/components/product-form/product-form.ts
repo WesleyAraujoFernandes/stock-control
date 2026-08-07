@@ -1,9 +1,10 @@
 import { CreateProductRequest } from './../../models/create-product.request';
-import { Component, inject } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Button } from '../../../../shared/ui/button/button/button';
 import { ERROR_CLASSES, FORM_FIELD_CLASSES, LABEL_CLASSES } from './product-form.style';
 import { ProductStore } from '../../store/product.store';
+import { Product } from '../../models/product.model';
 
 @Component({
   selector: 'app-product-form',
@@ -20,6 +21,7 @@ export class ProductForm {
   readonly fieldClasses = FORM_FIELD_CLASSES;
   readonly labelClasses = LABEL_CLASSES;
   readonly errorClasses = ERROR_CLASSES;
+  readonly saved = output<Product>();
 
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(120)]],
@@ -40,6 +42,7 @@ export class ProductForm {
     }
     const request: CreateProductRequest = this.form.getRawValue();
     const product = this.productStore.create(request);
+    this.saved.emit(product);
     console.log('Produto criado:', product);
   }
 }

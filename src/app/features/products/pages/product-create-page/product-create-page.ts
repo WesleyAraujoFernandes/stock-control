@@ -3,7 +3,8 @@ import { PageHeader } from "../../../../shared/ui/page-header/page-header";
 import { PageContent } from "../../../../shared/ui/page-content/page-content";
 import { Page } from "../../../../shared/ui/page/page";
 import { ProductForm } from "../../components/product-form/product-form";
-import { FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Product } from '../../models/product.model';
 
 
 @Component({
@@ -12,5 +13,9 @@ import { FormBuilder } from '@angular/forms';
   styleUrl: './product-create-page.css',
 })
 export class ProductCreatePage {
-  private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
+
+  onProductSaved(_product: Product): void {
+    this.router.navigate(['/products']);
+  }
 }
