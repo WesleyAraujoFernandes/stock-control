@@ -1,11 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { PageHeader } from "../../../../shared/ui/page-header/page-header";
-import { PageContent } from "../../../../shared/ui/page-content/page-content";
-import { Page } from "../../../../shared/ui/page/page";
-import { ProductForm } from "../../components/product-form/product-form";
+import { PageHeader } from '../../../../shared/ui/page-header/page-header';
+import { PageContent } from '../../../../shared/ui/page-content/page-content';
+import { Page } from '../../../../shared/ui/page/page';
+import { ProductForm } from '../../components/product-form/product-form';
 import { Router } from '@angular/router';
 import { Product } from '../../models/product.model';
-
 
 @Component({
   imports: [PageHeader, Page, PageContent, ProductForm],

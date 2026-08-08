@@ -23,6 +23,7 @@ export class ProductStore {
   create(request: CreateProductRequest): Product {
     const product = this.productService.create(request);
     this.products.update((products) => [...products, product]);
+    this.productService.saveProducts(this.products());
     return product;
   }
 
@@ -49,13 +50,14 @@ export class ProductStore {
       products.map((product) => (product.id === id ? updatedProduct : product))
     );
 
+    this.productService.saveProducts(this.products());
+
     return updatedProduct;
   }
 
   remove(id: string): boolean {
-    this.products.update((products) =>
-      products.filter((product) => product.id !== id)
-    );
+    this.products.update((products) => products.filter((product) => product.id !== id));
+    this.productService.saveProducts(this.products());
     return true;
   }
 }

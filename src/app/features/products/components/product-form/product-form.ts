@@ -53,6 +53,51 @@ export class ProductForm {
   });
 
   save(): void {
+    console.log('1 - entrou no save');
+
+    if (this.form.invalid) {
+      console.log('2 - formulário inválido');
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    console.log('3 - formulário válido');
+
+    const request: CreateProductRequest = this.form.getRawValue();
+
+    console.log('4 - request:', request);
+
+    const product = this.initialValue();
+
+    console.log('5 - initialValue:', product);
+
+    if (product) {
+      console.log('6 - entrando em atualização');
+
+      const updatedProduct = this.productStore.update(product.id, request);
+
+      console.log('7 - resultado update:', updatedProduct);
+
+      if (updatedProduct) {
+        this.saved.emit(updatedProduct);
+      }
+
+      return;
+    }
+
+    console.log('6 - entrando em criação');
+
+    const createdProduct = this.productStore.create(request);
+
+    console.log('7 - produto criado:', createdProduct);
+
+    this.saved.emit(createdProduct);
+
+    console.log('8 - evento saved emitido');
+  }
+
+  /*
+  save(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -69,4 +114,5 @@ export class ProductForm {
       return;
     }
   }
+    */
 }

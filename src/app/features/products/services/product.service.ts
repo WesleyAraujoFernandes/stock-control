@@ -8,6 +8,8 @@ import { CreateProductRequest } from '../models/create-product.request';
 export class ProductService {
   constructor() {}
 
+  private readonly storageKey = 'stock-control-products';
+
   create(request: CreateProductRequest): Product {
     return {
       id: crypto.randomUUID(),
@@ -19,6 +21,25 @@ export class ProductService {
   }
 
   getProducts(): Product[] {
+    const storedProducts = localStorage.getItem(this.storageKey);
+    if (!storedProducts) {
+      const products = this.getDefaultProducts();
+      this.saveProducts(products);
+      return products;
+    }
+    const products = JSON.parse(storedProducts);
+    return products.map((product: Product) => ({
+      ...product,
+      createdAt: new Date(product.createdAt),
+      updatedAt: new Date(product.updatedAt),
+    }));
+  }
+
+  saveProducts(products: Product[]) {
+    localStorage.setItem(this.storageKey, JSON.stringify(products));
+  }
+
+  private getDefaultProducts(): Product[] {
     return [
       {
         id: '1',
