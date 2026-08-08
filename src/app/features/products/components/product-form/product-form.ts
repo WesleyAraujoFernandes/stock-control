@@ -8,15 +8,12 @@ import { Product } from '../../models/product.model';
 
 @Component({
   selector: 'app-product-form',
-  imports: [
-    ReactiveFormsModule,
-    Button
-  ],
+  imports: [ReactiveFormsModule, Button],
   templateUrl: './product-form.html',
   styleUrl: './product-form.css',
 })
 export class ProductForm {
-  private readonly productStore = inject(ProductStore)
+  private readonly productStore = inject(ProductStore);
   private readonly fb = inject(FormBuilder);
   readonly fieldClasses = FORM_FIELD_CLASSES;
   readonly labelClasses = LABEL_CLASSES;
@@ -32,8 +29,8 @@ export class ProductForm {
     unitPrice: [0, [Validators.required, Validators.min(0)]],
     active: [true, [Validators.required]],
     createdAt: [new Date(), [Validators.required]],
-    updatedAt: [new Date(), [Validators.required]]
-  })
+    updatedAt: [new Date(), [Validators.required]],
+  });
 
   save(): void {
     if (this.form.invalid) {
@@ -43,6 +40,5 @@ export class ProductForm {
     const request: CreateProductRequest = this.form.getRawValue();
     const product = this.productStore.create(request);
     this.saved.emit(product);
-    console.log('Produto criado:', product);
   }
 }

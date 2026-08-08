@@ -1,10 +1,10 @@
-import { computed, inject, Injectable, signal } from "@angular/core";
-import { Product } from "../models/product.model";
-import { ProductService } from "../services/product.service";
-import { CreateProductRequest } from "../models/create-product.request";
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { Product } from '../models/product.model';
+import { ProductService } from '../services/product.service';
+import { CreateProductRequest } from '../models/create-product.request';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class ProductStore {
   private readonly productService = inject(ProductService);
@@ -22,7 +22,7 @@ export class ProductStore {
 
   create(request: CreateProductRequest): Product {
     const product = this.productService.create(request);
-    this.products.update(products => [...products, product]);
+    this.products.update((products) => [...products, product]);
     return product;
   }
 }
