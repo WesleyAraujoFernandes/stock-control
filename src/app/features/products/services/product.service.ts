@@ -37,7 +37,7 @@ export class ProductService {
         name: 'Mouse',
         sku: 'MS001',
         category: 'Informática',
-        quantity: 5,
+        quantity: 50,
         minimumStock: 10,
         unitPrice: 89,
         active: true,

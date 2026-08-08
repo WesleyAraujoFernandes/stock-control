@@ -1,5 +1,4 @@
-export const EMPTY_STATE_CLASSES =
-  `
+export const EMPTY_STATE_CLASSES = `
   flex
   flex-col
   items-center

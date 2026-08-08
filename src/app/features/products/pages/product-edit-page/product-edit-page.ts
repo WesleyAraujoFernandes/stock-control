@@ -8,10 +8,12 @@ import { ProductForm } from '../../components/product-form/product-form';
 import { PageContent } from '../../../../shared/ui/page-content/page-content';
 import { Card } from '../../../../shared/ui/card/card/card';
 import { Product } from '../../models/product.model';
+import { EmptyState } from '../../../../shared/components/empty-state/empty-state';
+import { Button } from '../../../../shared/ui/button/button/button';
 
 @Component({
   selector: 'app-product-edit-page',
-  imports: [CardContent, Page, PageHeader, ProductForm, PageContent, Card],
+  imports: [CardContent, Page, PageHeader, ProductForm, PageContent, Card, EmptyState, Button],
   templateUrl: './product-edit-page.html',
   styleUrl: './product-edit-page.css',
 })
@@ -25,6 +27,10 @@ export class ProductEditPage {
   readonly product = this.productId ? this.store.getById(this.productId) : undefined;
 
   onProductSaved(_product: Product): void {
+    this.router.navigate(['/products']);
+  }
+
+  backToProducts(): void {
     this.router.navigate(['/products']);
   }
 }

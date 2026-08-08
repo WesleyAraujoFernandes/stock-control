@@ -13,7 +13,14 @@
         @if (product) {
         <app-product-form [initialValue]="product" (saved)="onProductSaved($event)" />
         } @else {
-        <p>Produto não encontrado.</p>
+        <app-empty-state>
+          <div class="space-y-4">
+            <p>Produto não encontrado.</p>
+            <app-button variant="secondary" (click)="backToProducts()">
+              Voltar para produtos
+            </app-button>
+          </div>
+        </app-empty-state>
         }
       </app-card-content>
     </app-card>
