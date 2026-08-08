@@ -7,6 +7,7 @@ import { CardHeader } from '../../../../shared/ui/card/card-header/card-header';
 import { CardContent } from '../../../../shared/ui/card/card-content/card-content';
 import { CardFooter } from '../../../../shared/ui/card/card-footer/card-footer';
 import { Button } from '../../../../shared/ui/button/button/button';
+import { ProductStore } from '../../store/product.store';
 
 @Component({
   selector: 'app-product-list',
@@ -17,6 +18,7 @@ import { Button } from '../../../../shared/ui/button/button/button';
 })
 export class ProductList {
   private readonly router = inject(Router);
+  private readonly productStore = inject(ProductStore);
   readonly products = input.required<Product[]>();
 
   stockStatus(product: Product): 'low' | 'normal' {
@@ -25,5 +27,11 @@ export class ProductList {
 
   editProduct(productId: string): void {
     this.router.navigate(['products', productId, 'edit']);
+  }
+
+  removeProduct(productId: string): void {
+    const confirmed = window.confirm('Deseja realmente excluir o produto?');
+    if (!confirmed) return;
+    this.productStore.remove(productId);
   }
 }

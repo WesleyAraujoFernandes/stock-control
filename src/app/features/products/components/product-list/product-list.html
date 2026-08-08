@@ -34,7 +34,7 @@
       <div class="flex justify-end gap-2">
         <app-button variant="secondary" (click)="editProduct(product.id)"> Editar </app-button>
 
-        <app-button variant="danger"> Excluir </app-button>
+        <app-button variant="danger" (click)="removeProduct(product.id)"> Excluir </app-button>
       </div>
     </app-card-footer>
   </app-card>

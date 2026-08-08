@@ -51,4 +51,11 @@ export class ProductStore {
 
     return updatedProduct;
   }
+
+  remove(id: string): boolean {
+    this.products.update((products) =>
+      products.filter((product) => product.id !== id)
+    );
+    return true;
+  }
 }
