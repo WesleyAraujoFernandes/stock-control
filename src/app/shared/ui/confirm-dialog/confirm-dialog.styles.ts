@@ -26,7 +26,7 @@ export const DIALOG_TITLE_CLASSES = `
   text-slate-900
 `;
 
-export const DIALOG_MESSAGES_CLASSES = `
+export const DIALOG_MESSAGE_CLASSES = `
   mt-2
   text-sm
   text-slate-500
