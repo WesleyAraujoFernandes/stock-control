@@ -1,11 +1,30 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CardContent } from '../../../../shared/ui/card/card-content/card-content';
+import { Page } from '../../../../shared/ui/page/page';
+import { PageHeader } from '../../../../shared/ui/page-header/page-header';
+import { ProductStore } from '../../store/product.store';
+import { ProductForm } from '../../components/product-form/product-form';
+import { PageContent } from '../../../../shared/ui/page-content/page-content';
+import { Card } from '../../../../shared/ui/card/card/card';
+import { Product } from '../../models/product.model';
 
 @Component({
   selector: 'app-product-edit-page',
-  imports: [],
+  imports: [CardContent, Page, PageHeader, ProductForm, PageContent, Card],
   templateUrl: './product-edit-page.html',
   styleUrl: './product-edit-page.css',
 })
 export class ProductEditPage {
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly store = inject(ProductStore);
 
+  readonly productId = this.route.snapshot.paramMap.get('id');
+
+  readonly product = this.productId ? this.store.getById(this.productId) : undefined;
+
+  onProductSaved(_product: Product): void {
+    this.router.navigate(['/products']);
+  }
 }

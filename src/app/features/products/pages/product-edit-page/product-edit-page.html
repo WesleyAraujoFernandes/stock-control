@@ -1,1 +1,21 @@
-<p>product-edit-page works!</p>
+<app-page>
+  <app-page-header>
+    <div>
+      <h1 class="text-3xl font-bold">Editar produto</h1>
+
+      <p class="text-slate-500">Altere os dados do produto.</p>
+    </div>
+  </app-page-header>
+
+  <app-page-content>
+    <app-card>
+      <app-card-content>
+        @if (product) {
+        <app-product-form [initialValue]="product" (saved)="onProductSaved($event)" />
+        } @else {
+        <p>Produto não encontrado.</p>
+        }
+      </app-card-content>
+    </app-card>
+  </app-page-content>
+</app-page>

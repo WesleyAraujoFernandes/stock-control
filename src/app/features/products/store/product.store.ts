@@ -25,4 +25,30 @@ export class ProductStore {
     this.products.update((products) => [...products, product]);
     return product;
   }
+
+  getById(id: string): Product | undefined {
+    return this.products().find((product) => product.id === id);
+  }
+
+  update(id: string, request: CreateProductRequest): Product | undefined {
+    const existingProduct = this.getById(id);
+
+    if (!existingProduct) {
+      return undefined;
+    }
+
+    const updatedProduct: Product = {
+      ...existingProduct,
+      ...request,
+      id: existingProduct.id,
+      createdAt: existingProduct.createdAt,
+      updatedAt: new Date(),
+    };
+
+    this.products.update((products) =>
+      products.map((product) => (product.id === id ? updatedProduct : product))
+    );
+
+    return updatedProduct;
+  }
 }

@@ -1,14 +1,42 @@
 <div class="space-y-4">
   @for (product of products(); track product.id) {
-    <app-card>
-      <app-card-header>
-        {{ product.name }}
-      </app-card-header>
-      <app-card-content>
-        <p><strong>SKU:</strong>{{ product.sku }}</p>
-        <p><strong>Categoria:</strong>{{ product.category }}</p>
-        <p><strong>Quantidade:</strong>{{ product.quantity }}</p>
-      </app-card-content>
-    </app-card>
+  <app-card>
+    @if (product) {
+    <app-card-header>
+      {{ product.name }}
+    </app-card-header>
+    <app-card-content>
+      <p><strong>SKU:</strong>{{ product.sku }}</p>
+      <p><strong>Categoria:</strong>{{ product.category }}</p>
+      <p><strong>Quantidade:</strong>{{ product.quantity }}</p>
+      @if (stockStatus(product) === 'low') {
+      <span
+        class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-red-700"
+      >
+        Estoque baixo
+      </span>
+      } @else {
+      <span
+        class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-green-700"
+      >
+        Estoque suficiente
+      </span>
+      }
+      <p>
+        <strong>Preço:</strong>
+        {{ product.unitPrice | currency : 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+      </p>
+    </app-card-content>
+    } @else {
+    <p>Produto não encontrado</p>
+    }
+    <app-card-footer>
+      <div class="flex justify-end gap-2">
+        <app-button variant="secondary" (click)="editProduct(product.id)"> Editar </app-button>
+
+        <app-button variant="danger"> Excluir </app-button>
+      </div>
+    </app-card-footer>
+  </app-card>
   }
 </div>
