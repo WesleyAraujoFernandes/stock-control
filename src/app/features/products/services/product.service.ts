@@ -1,6 +1,8 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Product } from '../models/product.model';
 import { CreateProductRequest } from '../models/create-product.request';
+import { StorageService } from './storage.service';
+import { PRODUCT_STORAGE_KEY } from '../constants/product-storage.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -8,7 +10,7 @@ import { CreateProductRequest } from '../models/create-product.request';
 export class ProductService {
   constructor() {}
 
-  private readonly storageKey = 'stock-control-products';
+  private readonly storage = inject(StorageService);
 
   create(request: CreateProductRequest): Product {
     return {
@@ -21,14 +23,13 @@ export class ProductService {
   }
 
   getProducts(): Product[] {
-    const storedProducts = localStorage.getItem(this.storageKey);
+    const storedProducts = this.storage.get<Product[]>(PRODUCT_STORAGE_KEY);
     if (!storedProducts) {
       const products = this.getDefaultProducts();
       this.saveProducts(products);
       return products;
     }
-    const products = JSON.parse(storedProducts);
-    return products.map((product: Product) => ({
+    return storedProducts.map((product) => ({
       ...product,
       createdAt: new Date(product.createdAt),
       updatedAt: new Date(product.updatedAt),
@@ -36,7 +37,7 @@ export class ProductService {
   }
 
   saveProducts(products: Product[]) {
-    localStorage.setItem(this.storageKey, JSON.stringify(products));
+    this.storage.set(PRODUCT_STORAGE_KEY, products);
   }
 
   private getDefaultProducts(): Product[] {

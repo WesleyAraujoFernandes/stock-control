@@ -30,7 +30,9 @@ export class ProductList {
   }
 
   removeProduct(productId: string): void {
-    const confirmed = window.confirm('Deseja realmente excluir o produto?');
+    const product = this.productStore.getById(productId);
+    if (!product) return;
+    const confirmed = confirm(`Tem certeza que deseja remover o produto ${product.name}?`);
     if (!confirmed) return;
     this.productStore.remove(productId);
   }

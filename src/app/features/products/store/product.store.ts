@@ -56,6 +56,11 @@ export class ProductStore {
   }
 
   remove(id: string): boolean {
+    const existingProduct = this.getById(id);
+
+    if (!existingProduct) {
+      return false;
+    }
     this.products.update((products) => products.filter((product) => product.id !== id));
     this.productService.saveProducts(this.products());
     return true;
