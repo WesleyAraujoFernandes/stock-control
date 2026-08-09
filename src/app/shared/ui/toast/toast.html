@@ -1,0 +1,15 @@
+@if (toast(); as currentToast) {
+<div [class]="classes()" role="alert">
+  <span>
+    {{ currentToast.message }}
+  </span>
+  <button
+    type="button"
+    class="text-current opacity-60 hover:opacity-100"
+    aria-label="Fechar"
+    (click)="close()"
+  >
+    ×
+  </button>
+</div>
+}

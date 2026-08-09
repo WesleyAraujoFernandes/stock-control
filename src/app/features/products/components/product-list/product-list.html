@@ -38,5 +38,12 @@
       </div>
     </app-card-footer>
   </app-card>
+  } @if (productToDelete(); as product) {
+  <app-confirm-dialog
+    title="Excluir produto"
+    message="Tem certeza que deseja excluir o produto &quot;{{ product.name }}&quot;?"
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  ></app-confirm-dialog>
   }
 </div>

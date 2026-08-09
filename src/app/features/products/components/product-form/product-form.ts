@@ -27,7 +27,7 @@ export class ProductForm {
     category: ['', [Validators.required]],
     quantity: [1, [Validators.required, Validators.min(0)]],
     minimumStock: [1, [Validators.required, Validators.min(0)]],
-    unitPrice: [0, [Validators.required, Validators.min(0)]],
+    unitPrice: [10, [Validators.required, Validators.min(0)]],
     active: [true, [Validators.required]],
     createdAt: [new Date(), [Validators.required]],
     updatedAt: [new Date(), [Validators.required]],
