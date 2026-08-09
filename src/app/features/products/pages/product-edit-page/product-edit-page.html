@@ -11,7 +11,11 @@
     <app-card>
       <app-card-content>
         @if (product) {
-        <app-product-form [initialValue]="product" (saved)="onProductSaved($event)" />
+        <app-product-form
+          [initialValue]="product"
+          (saved)="onProductSaved($event)"
+          (saveError)="onSaveError($event)"
+        />
         } @else {
         <app-empty-state>
           <div class="space-y-4">

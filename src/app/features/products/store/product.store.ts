@@ -65,4 +65,23 @@ export class ProductStore {
     this.productService.saveProducts(this.products());
     return true;
   }
+
+  toggleActive(id: string): boolean {
+    const existingProduct = this.getById(id);
+
+    if (!existingProduct) {
+      return false;
+    }
+
+    const updatedProduct = {
+      ...existingProduct,
+      active: !existingProduct.active,
+      updatedAt: new Date(),
+    };
+    this.products.update((products) =>
+      products.map((product) => (product.id === id ? updatedProduct : product))
+    );
+    this.productService.saveProducts(this.products());
+    return true;
+  }
 }

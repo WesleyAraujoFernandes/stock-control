@@ -33,6 +33,10 @@ export class ProductEditPage {
     this.router.navigate(['/products']);
   }
 
+  onSaveError(error: string): void {
+    this.toastService.error(error);
+  }
+
   backToProducts(): void {
     this.router.navigate(['/products']);
   }

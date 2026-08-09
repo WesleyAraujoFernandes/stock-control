@@ -39,6 +39,18 @@ export class ProductList {
     this.productToDelete.set(product);
   }
 
+  toggleActive(productId: string): void {
+    const product = this.productStore.getById(productId);
+    if (!product) return;
+    const updated = this.productStore.toggleActive(productId);
+    if (!updated) {
+      this.toastService.error(`Nao foi possivel atualizar o produto ${product.name}`);
+      return;
+    }
+    const status = !product.active ? 'ativado' : 'desativado';
+    this.toastService.success(`Produto "${product.name}" ${status} com sucesso`);
+  }
+
   cancelDelete(): void {
     this.productToDelete.set(null);
   }
@@ -46,8 +58,13 @@ export class ProductList {
   confirmDelete(): void {
     const product = this.productToDelete();
     if (!product) return;
+
     const removed = this.productStore.remove(product.id);
-    if (removed) this.toastService.success(`Produto ${product.name} removido com sucesso`);
-    this.productToDelete.set(null);
+    if (removed) {
+      this.toastService.success(`Produto ${product.name} exlcuído com sucesso`);
+    } else {
+      this.toastService.error(`Não foi possível excluir o produto ${product.name}`);
+    }
+    this.productToDelete.set(null); // fechar modal
   }
 }

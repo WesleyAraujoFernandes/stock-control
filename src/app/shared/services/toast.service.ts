@@ -12,9 +12,24 @@ export interface ToastMessage {
 })
 export class ToastService {
   readonly toast = signal<ToastMessage | null>(null);
+  private timeoutId?: ReturnType<typeof setTimeout>;
 
   show(message: string, type: ToastType = 'info'): void {
     this.toast.set({ type, message });
+    this.clearTimeout();
+    this.timeoutId = setTimeout(() => this.clear(), 3000);
+  }
+
+  clear(): void {
+    this.toast.set(null);
+    this.clearTimeout();
+  }
+
+  private clearTimeout(): void {
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = undefined;
+    }
   }
 
   success(message: string): void {
@@ -31,9 +46,5 @@ export class ToastService {
 
   info(message: string): void {
     this.show(message, 'info');
-  }
-
-  clear(): void {
-    this.toast.set(null);
   }
 }

@@ -31,6 +31,11 @@
     <p>Produto não encontrado</p>
     }
     <app-card-footer>
+      <div>
+        <app-button variant="secondary" size="sm" (click)="toggleActive(product.id)">
+          {{ product.active ? 'Desativar' : 'Ativar' }}
+        </app-button>
+      </div>
       <div class="flex justify-end gap-2">
         <app-button variant="secondary" (click)="editProduct(product.id)"> Editar </app-button>
 
