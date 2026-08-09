@@ -10,6 +10,7 @@ import { Card } from '../../../../shared/ui/card/card/card';
 import { Product } from '../../models/product.model';
 import { EmptyState } from '../../../../shared/components/empty-state/empty-state';
 import { Button } from '../../../../shared/ui/button/button/button';
+import { ToastService } from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-product-edit-page',
@@ -21,12 +22,14 @@ export class ProductEditPage {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly store = inject(ProductStore);
+  private readonly toastService = inject(ToastService);
 
   readonly productId = this.route.snapshot.paramMap.get('id');
 
   readonly product = this.productId ? this.store.getById(this.productId) : undefined;
 
   onProductSaved(_product: Product): void {
+    this.toastService.success(`Produto "${_product.name}" atualizado com sucesso`);
     this.router.navigate(['/products']);
   }
 

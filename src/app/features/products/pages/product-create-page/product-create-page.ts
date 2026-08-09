@@ -5,6 +5,7 @@ import { Page } from '../../../../shared/ui/page/page';
 import { ProductForm } from '../../components/product-form/product-form';
 import { Router } from '@angular/router';
 import { Product } from '../../models/product.model';
+import { ToastService } from '../../../../shared/services/toast.service';
 
 @Component({
   imports: [PageHeader, Page, PageContent, ProductForm],
@@ -13,8 +14,10 @@ import { Product } from '../../models/product.model';
 })
 export class ProductCreatePage {
   private readonly router = inject(Router);
+  private readonly toastService = inject(ToastService);
 
   onProductSaved(_product: Product): void {
+    this.toastService.success(`Produto "${_product.name}" criado com sucesso`);
     this.router.navigate(['/products']);
   }
 }
