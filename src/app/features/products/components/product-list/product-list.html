@@ -1,24 +1,45 @@
 <div class="space-y-4">
-  @for (product of products(); track product.id) {
+  <div class="flex gap-2">
+    <app-button size="sm" [variant]="filter() === 'all' ? 'primary' : 'secondary'" type="button"
+      (click)="filter.set('all')">
+      Todos
+    </app-button>
+    <app-button size="sm" [variant]="filter() === 'active' ? 'primary' : 'secondary'" type="button" (click)="filter.set('active')">
+      Ativos
+    </app-button>
+    <app-button size="sm" [variant]="filter() === 'inactive' ? 'primary' : 'secondary'" type="button" (click)="filter.set('inactive')" >
+      Inativos
+    </app-button>
+  </div>
+  @for (product of filteredProducts(); track product.id) {
   <app-card>
     @if (product) {
     <app-card-header>
-      {{ product.name }}
+      <div class="flex items-center justify-between gap-4">
+        <span>
+          {{ product.name }}
+        </span>
+        @if (product.active) {
+        <span class="rounded-full bg-green-100 px-2 5 py-1 text-xs font-medium text-green-700">
+          Ativo
+        </span>
+        } @else {
+        <span class="rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-500">
+          Inativo
+        </span>
+        }
+      </div>
     </app-card-header>
     <app-card-content>
       <p><strong>SKU:</strong>{{ product.sku }}</p>
       <p><strong>Categoria:</strong>{{ product.category }}</p>
       <p><strong>Quantidade:</strong>{{ product.quantity }}</p>
       @if (stockStatus(product) === 'low') {
-      <span
-        class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-red-700"
-      >
+      <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-red-700">
         Estoque baixo
       </span>
       } @else {
-      <span
-        class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-green-700"
-      >
+      <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-green-700">
         Estoque suficiente
       </span>
       }
@@ -44,11 +65,8 @@
     </app-card-footer>
   </app-card>
   } @if (productToDelete(); as product) {
-  <app-confirm-dialog
-    title="Excluir produto"
-    message="Tem certeza que deseja excluir o produto &quot;{{ product.name }}&quot;?"
-    (confirmed)="confirmDelete()"
-    (cancelled)="cancelDelete()"
-  ></app-confirm-dialog>
+  <app-confirm-dialog title="Excluir produto"
+    message="Tem certeza que deseja excluir o produto &quot;{{ product.name }}&quot;?" (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"></app-confirm-dialog>
   }
 </div>

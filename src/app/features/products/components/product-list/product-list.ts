@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CurrencyPipe } from '@angular/common';
 import { Product } from '../../models/product.model';
@@ -10,6 +10,8 @@ import { Button } from '../../../../shared/ui/button/button/button';
 import { ProductStore } from '../../store/product.store';
 import { ConfirmDialog } from '../../../../shared/ui/confirm-dialog/confirm-dialog';
 import { ToastService } from '../../../../shared/services/toast.service';
+
+type ProductFilter = 'all' | 'active' | 'inactive';
 
 @Component({
   selector: 'app-product-list',
@@ -24,7 +26,8 @@ export class ProductList {
   private readonly toastService = inject(ToastService);
   readonly products = input.required<Product[]>();
   readonly productToDelete = signal<Product | null>(null);
-
+  readonly filter = signal<ProductFilter>('all');
+  readonly hasFilteredProducts = computed(() => this.filteredProducts().length > 0);
   stockStatus(product: Product): 'low' | 'normal' {
     return product.quantity <= product.minimumStock ? 'low' : 'normal';
   }
@@ -67,4 +70,12 @@ export class ProductList {
     }
     this.productToDelete.set(null); // fechar modal
   }
+
+  readonly filteredProducts = computed(() => {
+    const products = this.products();
+    const filter = this.filter();
+    if (filter === 'active') return products.filter((p) => p.active);
+    if (filter === 'inactive') return products.filter((p) => !p.active);
+    return products;
+  });
 }
