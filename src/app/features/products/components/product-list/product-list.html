@@ -1,13 +1,13 @@
 <div class="space-y-4">
   <div class="flex gap-2">
     <app-button size="sm" [variant]="filter() === 'all' ? 'primary' : 'secondary'" type="button"
-      (click)="filter.set('all')">
+      (click)="setFilter('all')">
       Todos ({{ products().length }})
     </app-button>
-    <app-button size="sm" [variant]="filter() === 'active' ? 'primary' : 'secondary'" type="button" (click)="filter.set('active')">
+    <app-button size="sm" [variant]="filter() === 'active' ? 'primary' : 'secondary'" type="button" (click)="setFilter('active')">
       Ativos ({{ totalActiveProduct() }})
     </app-button>
-    <app-button size="sm" [variant]="filter() === 'inactive' ? 'primary' : 'secondary'" type="button" (click)="filter.set('inactive')" >
+    <app-button size="sm" [variant]="filter() === 'inactive' ? 'primary' : 'secondary'" type="button" (click)="setFilter('inactive')" >
       Inativos ({{ totalInactiveProduct() }})
     </app-button>
   </div>

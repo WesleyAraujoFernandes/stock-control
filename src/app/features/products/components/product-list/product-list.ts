@@ -83,4 +83,8 @@ export class ProductList {
     return products;
   });
 
+  setFilter(filter: ProductFilter): void {
+    this.filter.set(filter);
+  }
+
 }
