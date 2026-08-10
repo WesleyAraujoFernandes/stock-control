@@ -10,13 +10,14 @@ import { Button } from '../../../../shared/ui/button/button/button';
 import { ProductStore } from '../../store/product.store';
 import { ConfirmDialog } from '../../../../shared/ui/confirm-dialog/confirm-dialog';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { EmptyState } from "../../../../shared/components/empty-state/empty-state";
 
 type ProductFilter = 'all' | 'active' | 'inactive';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [Card, CardHeader, CardContent, CurrencyPipe, CardFooter, Button, ConfirmDialog],
+  imports: [Card, CardHeader, CardContent, CurrencyPipe, CardFooter, Button, ConfirmDialog, EmptyState],
   templateUrl: './product-list.html',
   styleUrl: './product-list.css',
 })
