@@ -29,6 +29,9 @@ export class ProductList {
   readonly productToDelete = signal<Product | null>(null);
   readonly filter = signal<ProductFilter>('all');
   readonly hasFilteredProducts = computed(() => this.filteredProducts().length > 0);
+  readonly totalActiveProduct = computed(() => this.products().filter(product => product.active).length);
+  readonly totalInactiveProduct = computed(() => this.products().filter(product => !product.active).length);
+  readonly totalProducts = computed(() => this.products().length);
   stockStatus(product: Product): 'low' | 'normal' {
     return product.quantity <= product.minimumStock ? 'low' : 'normal';
   }
@@ -79,4 +82,5 @@ export class ProductList {
     if (filter === 'inactive') return products.filter((p) => !p.active);
     return products;
   });
+
 }

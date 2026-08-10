@@ -2,13 +2,13 @@
   <div class="flex gap-2">
     <app-button size="sm" [variant]="filter() === 'all' ? 'primary' : 'secondary'" type="button"
       (click)="filter.set('all')">
-      Todos
+      Todos ({{ products().length }})
     </app-button>
     <app-button size="sm" [variant]="filter() === 'active' ? 'primary' : 'secondary'" type="button" (click)="filter.set('active')">
-      Ativos
+      Ativos ({{ totalActiveProduct() }})
     </app-button>
     <app-button size="sm" [variant]="filter() === 'inactive' ? 'primary' : 'secondary'" type="button" (click)="filter.set('inactive')" >
-      Inativos
+      Inativos ({{ totalInactiveProduct() }})
     </app-button>
   </div>
   @if (hasFilteredProducts()) {
