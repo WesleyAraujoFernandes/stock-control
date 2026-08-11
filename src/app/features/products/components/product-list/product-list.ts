@@ -10,7 +10,7 @@ import { Button } from '../../../../shared/ui/button/button/button';
 import { ProductStore } from '../../store/product.store';
 import { ConfirmDialog } from '../../../../shared/ui/confirm-dialog/confirm-dialog';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { EmptyState } from "../../../../shared/components/empty-state/empty-state";
+import { EmptyState } from '../../../../shared/components/empty-state/empty-state';
 
 type ProductFilter = 'all' | 'active' | 'inactive';
 
@@ -32,6 +32,7 @@ export class ProductList {
   readonly totalActiveProduct = computed(() => this.products().filter(product => product.active).length);
   readonly totalInactiveProduct = computed(() => this.products().filter(product => !product.active).length);
   readonly totalProducts = computed(() => this.products().length);
+  readonly searchTerm = signal('');
   stockStatus(product: Product): 'low' | 'normal' {
     return product.quantity <= product.minimumStock ? 'low' : 'normal';
   }
@@ -78,13 +79,20 @@ export class ProductList {
   readonly filteredProducts = computed(() => {
     const products = this.products();
     const filter = this.filter();
-    if (filter === 'active') return products.filter((p) => p.active);
-    if (filter === 'inactive') return products.filter((p) => !p.active);
-    return products;
+    const searchTerm = this.searchTerm().trim().toLowerCase();
+    return products.filter(product => {
+      const matchesFilter = filter === 'all' || (filter === 'active' && product.active) || (filter === 'inactive' && !product.active);
+      const matchesSearch = !searchTerm || product.name.toLowerCase().includes(searchTerm) || product.sku.toLowerCase().includes(searchTerm);
+      return matchesFilter && matchesSearch;
+    })
   });
 
   setFilter(filter: ProductFilter): void {
     this.filter.set(filter);
+  }
+
+  getStockStatus(product: Product): 'sufficient' | 'low' {
+    return product.quantity <= product.minimumStock ? 'low' : 'sufficient';
   }
 
 }

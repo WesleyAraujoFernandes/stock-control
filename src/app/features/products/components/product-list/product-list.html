@@ -1,86 +1,114 @@
 <div class="space-y-4">
+  <div>
+    <label for="product-search" class="mb-1 block text-sm font-medium text-slate-700">Pesquisar produto</label>
+    <input id="product-search" type="text" placeholder="Nome ou SKU" [value]="searchTerm()"
+      (input)="searchTerm.set($any($event.target).value)"
+      class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:ring-3 focus:ring-blue-500">
+  </div>
   <div class="flex gap-2">
     <app-button size="sm" [variant]="filter() === 'all' ? 'primary' : 'secondary'" type="button"
       (click)="setFilter('all')">
       Todos ({{ products().length }})
     </app-button>
-    <app-button size="sm" [variant]="filter() === 'active' ? 'primary' : 'secondary'" type="button" (click)="setFilter('active')">
+
+    <app-button size="sm" [variant]="filter() === 'active' ? 'primary' : 'secondary'" type="button"
+      (click)="setFilter('active')">
       Ativos ({{ totalActiveProduct() }})
     </app-button>
-    <app-button size="sm" [variant]="filter() === 'inactive' ? 'primary' : 'secondary'" type="button" (click)="setFilter('inactive')" >
+
+    <app-button size="sm" [variant]="filter() === 'inactive' ? 'primary' : 'secondary'" type="button"
+      (click)="setFilter('inactive')">
       Inativos ({{ totalInactiveProduct() }})
     </app-button>
   </div>
-  @if (hasFilteredProducts()) {
-    @for (product of filteredProducts(); track product.id) {
 
-    <app-card>
-      @if (product) {
-      <app-card-header>
-        <div class="flex items-center justify-between gap-4">
-          <span>
-            {{ product.name }}
-          </span>
-          @if (product.active) {
-          <span class="rounded-full bg-green-100 px-2 5 py-1 text-xs font-medium text-green-700">
-            Ativo
-          </span>
-          } @else {
-          <span class="rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-500">
-            Inativo
-          </span>
-          }
-        </div>
-      </app-card-header>
-      <app-card-content>
-        <p><strong>SKU:</strong>{{ product.sku }}</p>
-        <p><strong>Categoria:</strong>{{ product.category }}</p>
-        <p><strong>Quantidade:</strong>{{ product.quantity }}</p>
-        @if (stockStatus(product) === 'low') {
-        <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-red-700">
-          Estoque baixo
+  @if (hasFilteredProducts()) {
+  @for (product of filteredProducts(); track product.id) {
+  <app-card>
+    <app-card-header>
+      <div class="flex items-center justify-between gap-4">
+        <span>
+          {{ product.name }}
+        </span>
+
+        @if (product.active) {
+        <span class="rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">
+          Ativo
         </span>
         } @else {
-        <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-green-700">
-          Estoque suficiente
+        <span class="rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-500">
+          Inativo
         </span>
         }
-        <p>
-          <strong>Preço:</strong>
-          {{ product.unitPrice | currency : 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
-        </p>
-      </app-card-content>
-      } @else {
-      <p>Produto não encontrado</p>
-      }
-      <app-card-footer>
-        <div>
-          <app-button variant="secondary" size="sm" (click)="toggleActive(product.id)">
-            {{ product.active ? 'Desativar' : 'Ativar' }}
-          </app-button>
-        </div>
-        <div class="flex justify-end gap-2">
-          <app-button variant="secondary" (click)="editProduct(product.id)"> Editar </app-button>
+      </div>
+    </app-card-header>
 
-          <app-button variant="danger" (click)="removeProduct(product.id)"> Excluir </app-button>
-        </div>
-      </app-card-footer>
-    </app-card>
-    }
-  } @else {
-    <app-empty-state>
-      @if (filter() === 'all') {
-        Nenhum produto cadastro.
-      } @else if (filter() === 'active') {
-        Nenhum produto ativo
+    <app-card-content>
+      <p>
+        <strong>SKU:</strong>
+        {{ product.sku }}
+      </p>
+
+      <p>
+        <strong>Categoria:</strong>
+        {{ product.category }}
+      </p>
+
+      <p>
+        <strong>Quantidade:</strong>
+        {{ product.quantity }}
+      </p>
+
+      @if (stockStatus(product) === 'low') {
+      <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-red-700">
+        Estoque baixo
+      </span>
       } @else {
-        Nenhum produto inativo
+      <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-green-700">
+        Estoque suficiente
+      </span>
       }
-    </app-empty-state>
+
+      <p>
+        <strong>Preço:</strong>
+        {{ product.unitPrice | currency : 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+      </p>
+    </app-card-content>
+
+    <app-card-footer>
+      <div>
+        <app-button variant="secondary" size="sm" (click)="toggleActive(product.id)">
+          {{ product.active ? 'Desativar' : 'Ativar' }}
+        </app-button>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <app-button variant="secondary" (click)="editProduct(product.id)">
+          Editar
+        </app-button>
+
+        <app-button variant="danger" (click)="removeProduct(product.id)">
+          Excluir
+        </app-button>
+      </div>
+    </app-card-footer>
+  </app-card>
   }
+  } @else {
+  <app-empty-state>
+    @if (filter() === 'all') {
+    Nenhum produto cadastrado.
+    } @else if (filter() === 'active') {
+    Nenhum produto ativo.
+    } @else {
+    Nenhum produto inativo.
+    }
+  </app-empty-state>
+  }
+
   @if (productToDelete(); as product) {
   <app-confirm-dialog title="Excluir produto"
     message="Tem certeza que deseja excluir o produto &quot;{{ product.name }}&quot;?" (confirmed)="confirmDelete()"
-    (cancelled)="cancelDelete()"></app-confirm-dialog>
+    (cancelled)="cancelDelete()" />
   }
 </div>
