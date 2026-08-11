@@ -97,4 +97,8 @@ export class ProductList {
     return product.quantity <= product.minimumStock ? 'low' : 'sufficient';
   }
 
+  clearSearch(): void {
+    this.searchTerm.set('');
+  }
+
 }
