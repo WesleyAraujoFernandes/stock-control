@@ -96,7 +96,9 @@
   }
   } @else {
   <app-empty-state>
-    @if (filter() === 'all') {
+    @if (hasSearchTerm()) {
+    Nenhum produto encontrado para "{{ searchTerm() }}".
+    } @else if (filter() === 'all') {
     Nenhum produto cadastrado.
     } @else if (filter() === 'active') {
     Nenhum produto ativo.

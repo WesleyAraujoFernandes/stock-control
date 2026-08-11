@@ -33,6 +33,8 @@ export class ProductList {
   readonly totalInactiveProduct = computed(() => this.products().filter(product => !product.active).length);
   readonly totalProducts = computed(() => this.products().length);
   readonly searchTerm = signal('');
+  readonly hasSearchTerm = computed(() => this.searchTerm().trim().length > 0);
+
   stockStatus(product: Product): 'low' | 'normal' {
     return product.quantity <= product.minimumStock ? 'low' : 'normal';
   }

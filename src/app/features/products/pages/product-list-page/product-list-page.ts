@@ -30,6 +30,7 @@ import { Router } from '@angular/router';
 export class ProductListPage {
   private readonly router = inject(Router);
   public readonly store = inject(ProductStore);
+
   constructor() {}
 
   newProduct(): void {
