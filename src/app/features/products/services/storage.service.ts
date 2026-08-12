@@ -5,9 +5,9 @@ import { Injectable } from '@angular/core';
 })
 export class StorageService {
   get<T>(key: string): T | null {
-    const value = localStorage.getItem(key);
-    if (!value) return null;
     try {
+      const value = localStorage.getItem(key);
+      if (!value) return null;
       return JSON.parse(value) as T;
     } catch {
       return null;
@@ -15,10 +15,18 @@ export class StorageService {
   }
 
   set<T>(key: string, value: T): void {
-    localStorage.setItem(key, JSON.stringify(value));
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch {
+      // Persistência indisponível.
+    }
   }
 
   remove(key: string): void {
-    localStorage.removeItem(key);
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      // Persistência indisponível.
+    }
   }
 }

@@ -23,7 +23,6 @@ export class ProductStore {
   create(request: CreateProductRequest): Product {
     const product = this.productService.create(request);
     this.products.update((products) => [...products, product]);
-    this.productService.saveProducts(this.products());
     return product;
   }
 
@@ -31,38 +30,32 @@ export class ProductStore {
     return this.products().find((product) => product.id === id);
   }
 
-  update(id: string, request: CreateProductRequest): Product | undefined {
-    const existingProduct = this.getById(id);
+  update(
+    id: string,
+    request: CreateProductRequest
+  ): Product | undefined {
+    const updatedProduct = this.productService.update(id, request);
 
-    if (!existingProduct) {
+    if (!updatedProduct) {
       return undefined;
     }
 
-    const updatedProduct: Product = {
-      ...existingProduct,
-      ...request,
-      id: existingProduct.id,
-      createdAt: existingProduct.createdAt,
-      updatedAt: new Date(),
-    };
-
     this.products.update((products) =>
-      products.map((product) => (product.id === id ? updatedProduct : product))
+      products.map((product) =>
+        product.id === id ? updatedProduct : product
+      )
     );
-
-    this.productService.saveProducts(this.products());
 
     return updatedProduct;
   }
 
   remove(id: string): boolean {
-    const existingProduct = this.getById(id);
-
-    if (!existingProduct) {
+    const removed = this.productService.remove(id);
+    if (!removed) {
       return false;
     }
+
     this.products.update((products) => products.filter((product) => product.id !== id));
-    this.productService.saveProducts(this.products());
     return true;
   }
 

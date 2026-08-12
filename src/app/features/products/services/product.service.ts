@@ -8,26 +8,29 @@ import { PRODUCT_STORAGE_KEY } from '../constants/product-storage.constants';
   providedIn: 'root',
 })
 export class ProductService {
-  constructor() {}
+  constructor() { }
 
   private readonly storage = inject(StorageService);
 
   create(request: CreateProductRequest): Product {
-    return {
+    const product: Product = {
       id: crypto.randomUUID(),
       ...request,
       active: true,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
+
+    const products = this.getProducts();
+    this.saveProducts([...products, product]);
+
+    return product;
   }
 
   getProducts(): Product[] {
     const storedProducts = this.storage.get<Product[]>(PRODUCT_STORAGE_KEY);
     if (!storedProducts) {
-      const products = this.getDefaultProducts();
-      this.saveProducts(products);
-      return products;
+      return [];
     }
     return storedProducts.map((product) => ({
       ...product,
@@ -40,32 +43,50 @@ export class ProductService {
     this.storage.set(PRODUCT_STORAGE_KEY, products);
   }
 
-  private getDefaultProducts(): Product[] {
-    return [
-      {
-        id: '1',
-        name: 'Notebook',
-        sku: 'NB001',
-        category: 'Informática',
-        quantity: 12,
-        minimumStock: 5,
-        unitPrice: 4200,
-        active: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: '2',
-        name: 'Mouse',
-        sku: 'MS001',
-        category: 'Informática',
-        quantity: 50,
-        minimumStock: 10,
-        unitPrice: 89,
-        active: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
+  update(
+    id: string,
+    request: CreateProductRequest
+  ): Product | undefined {
+    const products = this.getProducts();
+
+    const existingProduct = products.find(
+      (product) => product.id === id
+    );
+
+    if (!existingProduct) {
+      return undefined;
+    }
+
+    const updatedProduct: Product = {
+      ...existingProduct,
+      ...request,
+      id: existingProduct.id,
+      createdAt: existingProduct.createdAt,
+      updatedAt: new Date(),
+    };
+
+    this.saveProducts(
+      products.map((product) =>
+        product.id === id ? updatedProduct : product
+      )
+    );
+
+    return updatedProduct;
+  }
+
+  remove(id: string): boolean {
+    const products = this.getProducts();
+    const productExists = products.some((product) => product.id === id);
+
+    if (!productExists) {
+      return false;
+    }
+
+    const remainingProducts = products.filter(
+      (product) => product.id !== id
+    );
+
+    this.saveProducts(remainingProducts);
+    return true;
   }
 }
