@@ -74,7 +74,6 @@ export class ProductStore {
     this.products.update((products) =>
       products.map((product) => (product.id === id ? updatedProduct : product))
     );
-    this.productService.saveProducts(this.products());
     return true;
   }
 }

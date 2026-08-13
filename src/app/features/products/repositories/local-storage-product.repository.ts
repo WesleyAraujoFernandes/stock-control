@@ -12,7 +12,7 @@ export class LocalStorageProductRepository extends ProductRepository {
 
   private readonly storage = inject(StorageService);
 
-  override getAll(): Product[] {
+  override getProducts(): Product[] {
     const storedProducts = this.storage.get<Product[]>(PRODUCT_STORAGE_KEY);
 
     if (!storedProducts) {
@@ -33,12 +33,12 @@ export class LocalStorageProductRepository extends ProductRepository {
       createdAt: new Date(),
       updatedAt: new Date(),
     }
-    const products = this.getAll();
+    const products = this.getProducts();
     this.saveProducts([...products, product])
     return product;
   }
   override update(id: string, request: CreateProductRequest): Product | undefined {
-    const products = this.getAll();
+    const products = this.getProducts();
     const existingProduct = products.find((product => product.id === id));
 
     if (!existingProduct) {
@@ -60,7 +60,7 @@ export class LocalStorageProductRepository extends ProductRepository {
     return updatedProduct;
   }
   override remove(id: string): boolean {
-    const products = this.getAll();
+    const products = this.getProducts();
 
     const productExists = products.some((product) => product.id === id);
 

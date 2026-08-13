@@ -2,11 +2,17 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChang
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
+import { ProductRepository } from './features/products/repositories/product.repository';
+import { LocalStorageProductRepository } from './features/products/repositories/local-storage-product.repository';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes)
+    provideRouter(routes),
+    {
+      provide: ProductRepository,
+      useExisting: LocalStorageProductRepository
+    }
   ]
 };
