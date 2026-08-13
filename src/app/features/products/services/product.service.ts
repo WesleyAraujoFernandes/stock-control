@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Product } from '../models/product.model';
 import { CreateProductRequest } from '../models/create-product.request';
 import { ProductRepository } from '../repositories/product.repository';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -28,5 +28,22 @@ export class ProductService {
 
   remove(id: string): Observable<boolean> {
     return this.repository.remove(id);
+  }
+
+  toggleActive(id: string): Observable<Product | undefined> {
+    const product = this.repository.getById(id);
+    if (!product) {
+      return of(undefined);
+    }
+
+    return this.repository.update(id, {
+      name: product.name,
+      sku: product.sku,
+      category: product.category,
+      quantity: product.quantity,
+      minimumStock: product.minimumStock,
+      unitPrice: product.unitPrice,
+      active: !product.active,
+    })
   }
 }

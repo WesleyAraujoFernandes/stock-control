@@ -10,8 +10,11 @@ import { Observable, of } from 'rxjs';
   providedIn: 'root',
 })
 export class LocalStorageProductRepository extends ProductRepository {
-
   private readonly storage = inject(StorageService);
+
+  override getById(id: string): Product | undefined {
+    return this.readProducts().find((product) => product.id === id);
+  }
 
   override getProducts(): Observable<Product[]> {
     return of(this.readProducts());

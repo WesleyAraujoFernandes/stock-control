@@ -2,7 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { Product } from '../models/product.model';
 import { ProductService } from '../services/product.service';
 import { CreateProductRequest } from '../models/create-product.request';
-import { Observable, tap } from 'rxjs';
+import { Observable, ObservableNotification, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -55,24 +55,12 @@ export class ProductStore {
     );
   }
 
-  toggleActive(id: string): boolean {
-    const existingProduct = this.getById(id);
-
-    if (!existingProduct) {
-      return false;
-    }
-
-    const updatedProduct: Product = {
-      ...existingProduct,
-      active: !existingProduct.active,
-      updatedAt: new Date(),
-    };
-
-    // Nota: Se a alteração de status precisar persistir no back-end/localStorage,
-    // o ideal seria criar um método no service e assinar aqui de forma similar ao update.
-    this.products.update((products) =>
-      products.map((product) => (product.id === id ? updatedProduct : product))
-    );
-    return true;
+  toggleActive(id: string): Observable<Product | undefined> {
+    return this.productService.toggleActive(id).pipe(tap((updatedProduct) => {
+      if (!updatedProduct) {
+        return;
+      }
+      this.products.update((products) => products.map((product) => product.id === id ? updatedProduct : product));
+    }))
   }
 }
