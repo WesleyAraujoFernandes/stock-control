@@ -61,15 +61,26 @@ export class ProductForm {
     const request: CreateProductRequest = this.form.getRawValue();
     const product = this.initialValue();
     if (product) {
-      const updatedProduct = this.productStore.update(product.id, request);
-      if (updatedProduct) {
-        this.saved.emit(updatedProduct);
-      } else {
-        this.saveError.emit('Não foi possível atualizar o produto');
-      }
-      return;
+      this.productStore.update(this.initialValue()!.id, request).subscribe({
+        next: (updatedProduct) => {
+          if (!updatedProduct) {
+            return;
+          }
+          this.saved.emit(updatedProduct);
+        },
+        error: (error) => {
+          this.saveError.emit('Não foi possível atualizar o produto:' + error);
+        }
+      })
+    } else {
+      this.productStore.create(request).subscribe({
+        next: (createdProduct) => {
+          this.saved.emit(createdProduct);
+        },
+        error: (error) => {
+          this.saveError.emit('Não foi possível criar o produto:' + error);
+        }
+      })
     }
-    const createdProduct = this.productStore.create(request);
-    this.saved.emit(createdProduct);
   }
 }

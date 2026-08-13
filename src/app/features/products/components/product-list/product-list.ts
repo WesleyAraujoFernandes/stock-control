@@ -67,12 +67,7 @@ export class ProductList {
     const product = this.productToDelete();
     if (!product) return;
 
-    const removed = this.productStore.remove(product.id);
-    if (removed) {
-      this.toastService.success(`Produto ${product.name} exlcuído com sucesso`);
-    } else {
-      this.toastService.error(`Não foi possível excluir o produto ${product.name}`);
-    }
+    this.productStore.remove(product.id);
     this.productToDelete.set(null); // fechar modal
   }
 

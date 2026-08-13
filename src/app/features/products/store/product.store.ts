@@ -2,6 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { Product } from '../models/product.model';
 import { ProductService } from '../services/product.service';
 import { CreateProductRequest } from '../models/create-product.request';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -24,45 +25,34 @@ export class ProductStore {
     });
   }
 
-  create(request: CreateProductRequest): void {
-    this.productService.create(request).subscribe({
-      next: (newProduct) => {
-        this.products.update((products) => [...products, newProduct]);
-      },
-      error: (err) => console.error('Erro ao criar produto:', err)
-    });
+  create(request: CreateProductRequest): Observable<Product> {
+    return this.productService.create(request).pipe(tap((newProduct) => {
+      this.products.update((products) => [...products, newProduct]);
+    }))
   }
 
   getById(id: string): Product | undefined {
     return this.products().find((product) => product.id === id);
   }
 
-  update(id: string, request: CreateProductRequest): void {
-    this.productService.update(id, request).subscribe({
-      next: (updatedProduct) => {
-        if (!updatedProduct) return;
-
-        this.products.update((products) =>
-          products.map((product) =>
-            product.id === id ? updatedProduct : product
-          )
-        );
-      },
-      error: (err) => console.error('Erro ao atualizar produto:', err)
-    });
+  update(id: string, request: CreateProductRequest): Observable<Product | undefined> {
+    return this.productService.update(id, request).pipe(tap((updatedProduct) => {
+      if (!updatedProduct) {
+        return;
+      }
+      this.products.update((product) => product.map((product) => product.id === id ? updatedProduct : product));
+    }))
   }
 
-  remove(id: string): void {
-    this.productService.remove(id).subscribe({
-      next: (removed) => {
-        if (!removed) return;
-
-        this.products.update((products) =>
-          products.filter((product) => product.id !== id)
-        );
-      },
-      error: (err) => console.error('Erro ao remover produto:', err)
-    });
+  remove(id: string): Observable<boolean> {
+    return this.productService.remove(id).pipe(
+      tap((removed) => {
+        if (!removed) {
+          return;
+        }
+        this.products.update((products) => products.filter((product) => product.id !== id));
+      })
+    );
   }
 
   toggleActive(id: string): boolean {
