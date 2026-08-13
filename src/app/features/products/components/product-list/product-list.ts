@@ -54,7 +54,7 @@ export class ProductList {
           updatedProduct.active = !updatedProduct.active;
           this.productStore.update(updatedProduct.id, updatedProduct);
           console.log("updateProduct:" + updatedProduct);
-          this.toastService.success('Status do produto alterado com sucesso!');
+          this.toastService.success('status do produto alterado com sucesso!');
           return;
         }
       },
