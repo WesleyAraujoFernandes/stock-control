@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { ProductRepository } from './product.repository';
 import { CreateProductRequest } from '../models/create-product.request';
+import { UpdateProductRequest } from '../models/update-product.request';
 import { Product } from '../models/product.model';
 import { StorageService } from '../services/storage.service';
 import { PRODUCT_STORAGE_KEY } from '../constants/product-storage.constants';
@@ -35,7 +36,7 @@ export class LocalStorageProductRepository extends ProductRepository {
     return of(newProduct);
   }
 
-  override update(id: string, request: CreateProductRequest): Observable<Product | undefined> {
+  override update(id: string, request: UpdateProductRequest): Observable<Product | undefined> {
     const products = this.readProducts();
     const existingProduct = products.find((product) => product.id === id);
 
@@ -44,9 +45,9 @@ export class LocalStorageProductRepository extends ProductRepository {
     }
 
     const updatedProduct: Product = {
+      ...existingProduct,
       ...request,
-      id,
-      active: true,
+      id: existingProduct.id,
       createdAt: new Date(existingProduct.createdAt),
       updatedAt: new Date(),
     };

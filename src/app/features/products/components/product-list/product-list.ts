@@ -50,18 +50,28 @@ export class ProductList {
   toggleActive(productId: string): void {
     this.productStore.toggleActive(productId).subscribe({
       next: (updatedProduct) => {
-        if (updatedProduct) {
-          updatedProduct.active = !updatedProduct.active;
-          this.productStore.update(updatedProduct.id, updatedProduct);
-          console.log("updateProduct:" + updatedProduct);
-          this.toastService.success('status do produto alterado com sucesso!');
+        console.log('Produto recebido pelo ProductList:', updatedProduct);
+        if (!updatedProduct) {
           return;
         }
+
+        const status = updatedProduct.active
+          ? 'ativado'
+          : 'desativado';
+
+        this.toastService.success(
+          `Produto "${updatedProduct.name}" ${status} com sucesso.`
+        );
       },
+
       error: (error) => {
-        this.toastService.error('Erro ao alterar o status do produto:' + error);
-      }
-    })
+        this.toastService.error(
+          'Erro ao alterar o status do produto.'
+        );
+
+        console.error('Erro ao alterar status do produto:', error);
+      },
+    });
   }
 
   cancelDelete(): void {

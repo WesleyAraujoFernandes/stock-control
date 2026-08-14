@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Product } from '../models/product.model';
 import { CreateProductRequest } from '../models/create-product.request';
+import { UpdateProductRequest } from '../models/update-product.request';
 import { ProductRepository } from '../repositories/product.repository';
 import { Observable, of } from 'rxjs';
 
@@ -21,7 +22,7 @@ export class ProductService {
   }
   update(
     id: string,
-    request: CreateProductRequest
+    request: UpdateProductRequest
   ): Observable<Product | undefined> {
     return this.repository.update(id, request);
   }
@@ -32,9 +33,16 @@ export class ProductService {
 
   toggleActive(id: string): Observable<Product | undefined> {
     const product = this.repository.getById(id);
+
+    console.log('Produto antes do toggle:', product);
+
     if (!product) {
       return of(undefined);
     }
+
+    const newActive = !product.active;
+
+    console.log('Novo active:', newActive);
 
     return this.repository.update(id, {
       name: product.name,
@@ -43,7 +51,7 @@ export class ProductService {
       quantity: product.quantity,
       minimumStock: product.minimumStock,
       unitPrice: product.unitPrice,
-      active: !product.active,
-    })
+      active: !product.active
+    });
   }
 }

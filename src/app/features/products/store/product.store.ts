@@ -3,6 +3,7 @@ import { Product } from '../models/product.model';
 import { ProductService } from '../services/product.service';
 import { CreateProductRequest } from '../models/create-product.request';
 import { Observable, ObservableNotification, tap } from 'rxjs';
+import { UpdateProductRequest } from '../models/update-product.request';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +36,7 @@ export class ProductStore {
     return this.products().find((product) => product.id === id);
   }
 
-  update(id: string, request: CreateProductRequest): Observable<Product | undefined> {
+  update(id: string, request: UpdateProductRequest): Observable<Product | undefined> {
     return this.productService.update(id, request).pipe(tap((updatedProduct) => {
       if (!updatedProduct) {
         return;
@@ -56,11 +57,22 @@ export class ProductStore {
   }
 
   toggleActive(id: string): Observable<Product | undefined> {
-    return this.productService.toggleActive(id).pipe(tap((updatedProduct) => {
-      if (!updatedProduct) {
-        return;
-      }
-      this.products.update((products) => products.map((product) => product.id === id ? updatedProduct : product));
-    }))
+    return this.productService.toggleActive(id).pipe(
+      tap((updatedProduct) => {
+        if (!updatedProduct) {
+          return;
+        }
+
+        console.log('Produto atualizado no Store:', updatedProduct);
+
+        this.products.update((products) =>
+          products.map((product) =>
+            product.id === id ? updatedProduct : product
+          )
+        );
+
+        console.log('Produtos no Store:', this.products());
+      })
+    );
   }
 }

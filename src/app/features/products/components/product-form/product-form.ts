@@ -1,4 +1,5 @@
 import { CreateProductRequest } from './../../models/create-product.request';
+import { UpdateProductRequest } from './../../models/update-product.request';
 import { Component, inject, input, output, effect } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Button } from '../../../../shared/ui/button/button/button';
@@ -58,29 +59,41 @@ export class ProductForm {
       this.form.markAllAsTouched();
       return;
     }
-    const request: CreateProductRequest = this.form.getRawValue();
+
     const product = this.initialValue();
+
     if (product) {
-      this.productStore.update(this.initialValue()!.id, request).subscribe({
+      const request: UpdateProductRequest = this.form.getRawValue();
+
+      this.productStore.update(product.id, request).subscribe({
         next: (updatedProduct) => {
           if (!updatedProduct) {
             return;
           }
+
           this.saved.emit(updatedProduct);
         },
         error: (error) => {
-          this.saveError.emit('Não foi possível atualizar o produto:' + error);
-        }
-      })
-    } else {
-      this.productStore.create(request).subscribe({
-        next: (createdProduct) => {
-          this.saved.emit(createdProduct);
+          this.saveError.emit(
+            'Não foi possível atualizar o produto: ' + error
+          );
         },
-        error: (error) => {
-          this.saveError.emit('Não foi possível criar o produto:' + error);
-        }
-      })
+      });
+
+      return;
     }
+
+    const request: CreateProductRequest = this.form.getRawValue();
+
+    this.productStore.create(request).subscribe({
+      next: (createdProduct) => {
+        this.saved.emit(createdProduct);
+      },
+      error: (error) => {
+        this.saveError.emit(
+          'Não foi possível criar o produto: ' + error
+        );
+      },
+    });
   }
 }
