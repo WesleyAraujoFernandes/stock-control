@@ -22,14 +22,16 @@ export class ProductStore {
   load(): void {
     this.productService.getProducts().subscribe({
       next: (products) => this.products.set(products),
-      error: (err) => console.error('Erro ao carregar produtos:', err)
+      error: (err) => console.error('Erro ao carregar produtos:', err),
     });
   }
 
   create(request: CreateProductRequest): Observable<Product> {
-    return this.productService.create(request).pipe(tap((newProduct) => {
-      this.products.update((products) => [...products, newProduct]);
-    }))
+    return this.productService.create(request).pipe(
+      tap((newProduct) => {
+        this.products.update((products) => [...products, newProduct]);
+      })
+    );
   }
 
   getById(id: string): Product | undefined {
@@ -37,12 +39,16 @@ export class ProductStore {
   }
 
   update(id: string, request: UpdateProductRequest): Observable<Product | undefined> {
-    return this.productService.update(id, request).pipe(tap((updatedProduct) => {
-      if (!updatedProduct) {
-        return;
-      }
-      this.products.update((product) => product.map((product) => product.id === id ? updatedProduct : product));
-    }))
+    return this.productService.update(id, request).pipe(
+      tap((updatedProduct) => {
+        if (!updatedProduct) {
+          return;
+        }
+        this.products.update((product) =>
+          product.map((product) => (product.id === id ? updatedProduct : product))
+        );
+      })
+    );
   }
 
   remove(id: string): Observable<boolean> {
@@ -63,15 +69,9 @@ export class ProductStore {
           return;
         }
 
-        console.log('Produto atualizado no Store:', updatedProduct);
-
         this.products.update((products) =>
-          products.map((product) =>
-            product.id === id ? updatedProduct : product
-          )
+          products.map((product) => (product.id === id ? updatedProduct : product))
         );
-
-        console.log('Produtos no Store:', this.products());
       })
     );
   }

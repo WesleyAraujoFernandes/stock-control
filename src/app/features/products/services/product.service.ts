@@ -9,7 +9,7 @@ import { Observable, of } from 'rxjs';
   providedIn: 'root',
 })
 export class ProductService {
-  constructor() { }
+  constructor() {}
 
   private readonly repository = inject(ProductRepository);
 
@@ -20,10 +20,7 @@ export class ProductService {
   getProducts(): Observable<Product[]> {
     return this.repository.getProducts();
   }
-  update(
-    id: string,
-    request: UpdateProductRequest
-  ): Observable<Product | undefined> {
+  update(id: string, request: UpdateProductRequest): Observable<Product | undefined> {
     return this.repository.update(id, request);
   }
 
@@ -34,15 +31,11 @@ export class ProductService {
   toggleActive(id: string): Observable<Product | undefined> {
     const product = this.repository.getById(id);
 
-    console.log('Produto antes do toggle:', product);
-
     if (!product) {
       return of(undefined);
     }
 
     const newActive = !product.active;
-
-    console.log('Novo active:', newActive);
 
     return this.repository.update(id, {
       name: product.name,
@@ -51,7 +44,7 @@ export class ProductService {
       quantity: product.quantity,
       minimumStock: product.minimumStock,
       unitPrice: product.unitPrice,
-      active: !product.active
+      active: !product.active,
     });
   }
 }

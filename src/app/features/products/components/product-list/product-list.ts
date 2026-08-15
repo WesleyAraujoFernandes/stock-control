@@ -13,12 +13,27 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { EmptyState } from '../../../../shared/components/empty-state/empty-state';
 
 type ProductFilter = 'all' | 'active' | 'inactive';
-type ProductSort = | 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc' | 'quantity-asc' | 'quantity-desc';
+type ProductSort =
+  | 'name-asc'
+  | 'name-desc'
+  | 'price-asc'
+  | 'price-desc'
+  | 'quantity-asc'
+  | 'quantity-desc';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [Card, CardHeader, CardContent, CurrencyPipe, CardFooter, Button, ConfirmDialog, EmptyState],
+  imports: [
+    Card,
+    CardHeader,
+    CardContent,
+    CurrencyPipe,
+    CardFooter,
+    Button,
+    ConfirmDialog,
+    EmptyState,
+  ],
   templateUrl: './product-list.html',
   styleUrl: './product-list.css',
 })
@@ -30,8 +45,12 @@ export class ProductList {
   readonly productToDelete = signal<Product | null>(null);
   readonly filter = signal<ProductFilter>('all');
   readonly hasFilteredProducts = computed(() => this.filteredProducts().length > 0);
-  readonly totalActiveProduct = computed(() => this.products().filter(product => product.active).length);
-  readonly totalInactiveProduct = computed(() => this.products().filter(product => !product.active).length);
+  readonly totalActiveProduct = computed(
+    () => this.products().filter((product) => product.active).length
+  );
+  readonly totalInactiveProduct = computed(
+    () => this.products().filter((product) => !product.active).length
+  );
   readonly totalProducts = computed(() => this.products().length);
   readonly searchTerm = signal('');
   readonly hasSearchTerm = computed(() => this.searchTerm().trim().length > 0);
@@ -50,24 +69,17 @@ export class ProductList {
   toggleActive(productId: string): void {
     this.productStore.toggleActive(productId).subscribe({
       next: (updatedProduct) => {
-        console.log('Produto recebido pelo ProductList:', updatedProduct);
         if (!updatedProduct) {
           return;
         }
 
-        const status = updatedProduct.active
-          ? 'ativado'
-          : 'desativado';
+        const status = updatedProduct.active ? 'ativado' : 'desativado';
 
-        this.toastService.success(
-          `Produto "${updatedProduct.name}" ${status} com sucesso.`
-        );
+        this.toastService.success(`Produto "${updatedProduct.name}" ${status} com sucesso.`);
       },
 
       error: (error) => {
-        this.toastService.error(
-          'Erro ao alterar o status do produto.'
-        );
+        this.toastService.error('Erro ao alterar o status do produto.');
 
         console.error('Erro ao alterar status do produto:', error);
       },
@@ -92,9 +104,15 @@ export class ProductList {
     const searchTerm = this.searchTerm().trim().toLowerCase();
     const sort = this.sort();
 
-    const filtered = products.filter(product => {
-      const matchesFilters = filter === 'all' || (filter === 'active' && product.active) || (filter === 'inactive' && !product.active);
-      const matchesSearch = !searchTerm || product.name.toLowerCase().includes(searchTerm) || product.sku.toLowerCase().includes(searchTerm);
+    const filtered = products.filter((product) => {
+      const matchesFilters =
+        filter === 'all' ||
+        (filter === 'active' && product.active) ||
+        (filter === 'inactive' && !product.active);
+      const matchesSearch =
+        !searchTerm ||
+        product.name.toLowerCase().includes(searchTerm) ||
+        product.sku.toLowerCase().includes(searchTerm);
       return matchesFilters && matchesSearch;
     });
 
