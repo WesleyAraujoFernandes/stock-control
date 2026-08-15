@@ -22,6 +22,7 @@ export class ProductForm {
   readonly saved = output<Product>();
   readonly initialValue = input<Product | null>(null);
   readonly saveError = output<string>();
+  readonly cancelled = output<void>();
 
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(120)]],
@@ -74,9 +75,7 @@ export class ProductForm {
           this.saved.emit(updatedProduct);
         },
         error: (error) => {
-          this.saveError.emit(
-            'Não foi possível atualizar o produto: ' + error
-          );
+          this.saveError.emit('Não foi possível atualizar o produto: ' + error);
         },
       });
 
@@ -90,10 +89,12 @@ export class ProductForm {
         this.saved.emit(createdProduct);
       },
       error: (error) => {
-        this.saveError.emit(
-          'Não foi possível criar o produto: ' + error
-        );
+        this.saveError.emit('Não foi possível criar o produto: ' + error);
       },
     });
+  }
+
+  onCancel(): void {
+    this.cancelled.emit();
   }
 }

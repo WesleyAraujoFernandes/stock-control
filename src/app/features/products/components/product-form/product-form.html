@@ -2,54 +2,42 @@
   <!-- Informações Gerais -->
   <section class="space-y-6">
     <div>
-      <h2 class="text-lg font-semibold">
-        Informações Gerais
-      </h2>
-      <p class="text-sm text-slate-500">
-        Dados básicos do produto.
-      </p>
+      <h2 class="text-lg font-semibold">Informações Gerais</h2>
+      <p class="text-sm text-slate-500">Dados básicos do produto.</p>
     </div>
     <div>
-      <label for="name" [class]="labelClasses">
-        Nome do Produto
-      </label>
-      <input id="name" type="text" formControlName="name" [class]="fieldClasses">
+      <label for="name" [class]="labelClasses"> Nome do Produto </label>
+      <input id="name" type="text" formControlName="name" [class]="fieldClasses" />
       @if (form.controls.name.invalid && form.controls.name.touched) {
-      <p [class]="errorClasses">
-        Informe o nome do produto.
-      </p>
+      <p [class]="errorClasses">Informe o nome do produto.</p>
       }
     </div>
     <div>
       <label for="sku" [class]="labelClasses">SKU</label>
-      <input type="text" name="sku" id="sku" formControlName="sku" [class]="fieldClasses">
+      <input type="text" name="sku" id="sku" formControlName="sku" [class]="fieldClasses" />
       @if (form.controls.sku.invalid && form.controls.sku.touched) {
-      <p [class]="errorClasses">
-        Informe o SKU.
-      </p>
+      <p [class]="errorClasses">Informe o SKU.</p>
       }
     </div>
     <div>
-      <label for="category" [class]="labelClasses">
-        Categoria
-      </label>
-      <input type="text" name="category" id="category" formControlName="category" [class]="fieldClasses">
+      <label for="category" [class]="labelClasses"> Categoria </label>
+      <input
+        type="text"
+        name="category"
+        id="category"
+        formControlName="category"
+        [class]="fieldClasses"
+      />
       @if (form.controls.category.invalid && form.controls.category.touched) {
-      <p [class]="errorClasses">
-        Informe a categoria.
-      </p>
+      <p [class]="errorClasses">Informe a categoria.</p>
       }
     </div>
   </section>
   <!-- Controle de quantidades -->
   <section class="space-y-6">
     <div>
-      <h2 class="text-lg font-semibold">
-        Estoque
-      </h2>
-      <p class="text-sm text-slate-500">
-        Controle das quantidades disponíveis.
-      </p>
+      <h2 class="text-lg font-semibold">Estoque</h2>
+      <p class="text-sm text-slate-500">Controle das quantidades disponíveis.</p>
     </div>
   </section>
   <section>
@@ -57,52 +45,58 @@
       <!-- Campo Quantidade -->
       <div>
         <label for="quantity" [class]="labelClasses"> Quantidade </label>
-        <input type="number" name="quantity" id="quantity" min="0" formControlName="quantity" [class]="fieldClasses">
+        <input
+          type="number"
+          name="quantity"
+          id="quantity"
+          min="0"
+          formControlName="quantity"
+          [class]="fieldClasses"
+        />
         @if (form.controls.quantity.invalid && form.controls.quantity.touched) {
-        <p [class]="errorClasses"> Informe uma quantidade válida. </p>
+        <p [class]="errorClasses">Informe uma quantidade válida.</p>
         }
       </div>
       <!-- Campo Quantidade Mínima -->
       <div>
         <label for="minimumStock" [class]="labelClasses"> Quantidade mínima </label>
-        <input type="number" name="minimumStock" min="0" id="minimumStock" formControlName="minimumStock"
-          [class]="fieldClasses">
+        <input
+          type="number"
+          name="minimumStock"
+          min="0"
+          id="minimumStock"
+          formControlName="minimumStock"
+          [class]="fieldClasses"
+        />
         @if (form.controls.minimumStock.invalid && form.controls.minimumStock.touched) {
-        <p [class]="errorClasses"> Informe a quantidade mínima em estoque. </p>
+        <p [class]="errorClasses">Informe a quantidade mínima em estoque.</p>
         }
       </div>
     </div>
   </section>
   <section class="space-y-6">
     <div>
-      <h2 class="text-lg font-semibold">
-        Preço
-      </h2>
-      <p class="text-sm text-slate-500">
-        Informações financeiras do produto.
-      </p>
+      <h2 class="text-lg font-semibold">Preço</h2>
+      <p class="text-sm text-slate-500">Informações financeiras do produto.</p>
     </div>
     <div>
-      <label for="unitPrice" [class]="labelClasses">
-        Valor Unitário
-      </label>
-      <input type="number" name="unitPrice" id="unitPrice" min="0" step="0.01" formControlName="unitPrice" [class]="fieldClasses">
-      @if (
-        form.controls.unitPrice.invalid &&
-        form.controls.unitPrice.touched
-      ) {
-        <p class="errorClasses">
-          Informe um valor válido.
-        </p>
+      <label for="unitPrice" [class]="labelClasses"> Valor Unitário </label>
+      <input
+        type="number"
+        name="unitPrice"
+        id="unitPrice"
+        min="0"
+        step="0.01"
+        formControlName="unitPrice"
+        [class]="fieldClasses"
+      />
+      @if ( form.controls.unitPrice.invalid && form.controls.unitPrice.touched ) {
+      <p class="errorClasses">Informe um valor válido.</p>
       }
     </div>
   </section>
   <div class="flex justify-end gap-3">
-    <app-button variant="secondary" type="button">
-      Cancelar
-    </app-button>
-    <app-button type="submit" [disabled]="form.invalid">
-      Salvar
-    </app-button>
+    <app-button variant="secondary" (click)="onCancel()" type="button"> Cancelar </app-button>
+    <app-button type="submit" [disabled]="form.invalid"> Salvar </app-button>
   </div>
 </form>

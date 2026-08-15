@@ -94,8 +94,17 @@ export class ProductList {
     const product = this.productToDelete();
     if (!product) return;
 
-    this.productStore.remove(product.id);
-    this.productToDelete.set(null); // fechar modal
+    this.productStore.remove(product.id).subscribe({
+      next: (removed) => {
+        if (!removed) return;
+        this.toastService.success(`Produto "${product.name}" excluído com sucesso.`);
+        this.productToDelete.set(null);
+      },
+      error: (error) => {
+        this.toastService.error('Não foi possível excluir o produto.');
+        console.error('Erro ao excluir o produto:', error);
+      },
+    });
   }
 
   readonly filteredProducts = computed(() => {

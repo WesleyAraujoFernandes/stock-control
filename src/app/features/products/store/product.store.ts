@@ -2,7 +2,15 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { Product } from '../models/product.model';
 import { ProductService } from '../services/product.service';
 import { CreateProductRequest } from '../models/create-product.request';
-import { catchError, Observable, ObservableNotification, tap, throwError } from 'rxjs';
+import {
+  catchError,
+  delay,
+  finalize,
+  Observable,
+  ObservableNotification,
+  tap,
+  throwError,
+} from 'rxjs';
 import { UpdateProductRequest } from '../models/update-product.request';
 
 @Injectable({
@@ -15,19 +23,31 @@ export class ProductStore {
   readonly totalProducts = computed(() => this.products().length);
   readonly hasProducts = computed(() => this.totalProducts() > 0);
   readonly error = signal<string | null>(null);
+  readonly loading = signal(false);
 
   constructor() {
     this.load();
   }
 
   load(): void {
+    this.loading.set(true);
     this.error.set(null);
-    this.productService.getProducts().subscribe({
-      next: (products) => {
-        this.products.set(products);
-      },
-      error: () => this.error.set('Nao foi possivel carregar os produtos'),
-    });
+    this.productService
+      .getProducts()
+      .pipe(
+        delay(1000),
+        finalize(() => {
+          this.loading.set(false);
+        })
+      )
+      .subscribe({
+        next: (products) => {
+          this.products.set(products);
+        },
+        error: () => {
+          this.error.set('Não foi possível carregar os produtos.');
+        },
+      });
   }
 
   create(request: CreateProductRequest): Observable<Product> {

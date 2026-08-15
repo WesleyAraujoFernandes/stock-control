@@ -37,6 +37,10 @@ export class ProductEditPage {
     this.toastService.error(error);
   }
 
+  onCancel(): void {
+    this.router.navigate(['/products']);
+  }
+
   backToProducts(): void {
     this.router.navigate(['/products']);
   }
