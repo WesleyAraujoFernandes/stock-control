@@ -14,15 +14,19 @@ export class ProductStore {
   readonly products = signal<Product[]>([]);
   readonly totalProducts = computed(() => this.products().length);
   readonly hasProducts = computed(() => this.totalProducts() > 0);
+  readonly error = signal<string | null>(null);
 
   constructor() {
     this.load();
   }
 
   load(): void {
+    this.error.set(null);
     this.productService.getProducts().subscribe({
-      next: (products) => this.products.set(products),
-      error: (err) => console.error('Erro ao carregar produtos:', err),
+      next: (products) => {
+        this.products.set(products);
+      },
+      error: () => this.error.set('Nao foi possivel carregar os produtos'),
     });
   }
 
