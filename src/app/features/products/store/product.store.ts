@@ -2,7 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { Product } from '../models/product.model';
 import { ProductService } from '../services/product.service';
 import { CreateProductRequest } from '../models/create-product.request';
-import { Observable, ObservableNotification, tap } from 'rxjs';
+import { catchError, Observable, ObservableNotification, tap, throwError } from 'rxjs';
 import { UpdateProductRequest } from '../models/update-product.request';
 
 @Injectable({
@@ -31,9 +31,14 @@ export class ProductStore {
   }
 
   create(request: CreateProductRequest): Observable<Product> {
+    this.error.set(null);
     return this.productService.create(request).pipe(
       tap((newProduct) => {
         this.products.update((products) => [...products, newProduct]);
+      }),
+      catchError((error) => {
+        this.error.set('Não foi possível criar o produto: ' + error);
+        return throwError(() => error);
       })
     );
   }
@@ -43,6 +48,7 @@ export class ProductStore {
   }
 
   update(id: string, request: UpdateProductRequest): Observable<Product | undefined> {
+    this.error.set(null);
     return this.productService.update(id, request).pipe(
       tap((updatedProduct) => {
         if (!updatedProduct) {
@@ -51,6 +57,10 @@ export class ProductStore {
         this.products.update((product) =>
           product.map((product) => (product.id === id ? updatedProduct : product))
         );
+      }),
+      catchError((error) => {
+        this.error.set('Não foi possível atualizar o produto: ' + error);
+        return throwError(() => error);
       })
     );
   }
@@ -62,6 +72,10 @@ export class ProductStore {
           return;
         }
         this.products.update((products) => products.filter((product) => product.id !== id));
+      }),
+      catchError((error) => {
+        this.error.set('Não foi possível remover o produto: ' + error);
+        return throwError(() => error);
       })
     );
   }
@@ -76,6 +90,10 @@ export class ProductStore {
         this.products.update((products) =>
           products.map((product) => (product.id === id ? updatedProduct : product))
         );
+      }),
+      catchError((error) => {
+        this.error.set('Não foi possível alterar o status do produto: ' + error);
+        return throwError(() => error);
       })
     );
   }
