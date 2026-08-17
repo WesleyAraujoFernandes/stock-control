@@ -97,30 +97,31 @@ export class ProductList {
 
   confirmDelete(): void {
     const product = this.productToDelete();
-    if (!product || this.deleting()) return;
 
-    this.deleting.set(true);
+    if (!product) {
+      return;
+    }
 
-    this.productStore
-      .remove(product.id)
-      .pipe(
-        finalize(() => {
-          this.deleting.set(false);
-        })
-      )
-      .subscribe({
-        next: (removed) => {
-          if (!removed) {
-            return;
-          }
-          this.toastService.success(`Produto "${product.name}" excluído com sucesso.`);
-          this.productToDelete.set(null);
-        },
-        error: (error) => {
-          this.toastService.error('Erro ao excluir o produto.');
-          console.error('Erro ao excluir o produto:', error);
-        },
-      });
+    this.productStore.remove(product.id).subscribe({
+      next: () => {
+        this.productToDelete.set(null);
+
+        this.toastService.success(
+          `Produto "${product.name}" excluído com sucesso.`
+        );
+      },
+
+      error: (error) => {
+        this.toastService.error(
+          'Não foi possível excluir o produto.'
+        );
+
+        console.error(
+          'Erro ao excluir produto:',
+          error
+        );
+      },
+    });
   }
 
   readonly filteredProducts = computed(() => {

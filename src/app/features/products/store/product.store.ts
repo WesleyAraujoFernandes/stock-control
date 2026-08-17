@@ -7,7 +7,6 @@ import {
   delay,
   finalize,
   Observable,
-  ObservableNotification,
   tap,
   throwError,
 } from 'rxjs';
@@ -85,12 +84,9 @@ export class ProductStore {
     );
   }
 
-  remove(id: string): Observable<boolean> {
+  remove(id: string): Observable<void> {
     return this.productService.remove(id).pipe(
-      tap((removed) => {
-        if (!removed) {
-          return;
-        }
+      tap(() => {
         this.products.update((products) => products.filter((product) => product.id !== id));
       }),
       catchError((error) => {

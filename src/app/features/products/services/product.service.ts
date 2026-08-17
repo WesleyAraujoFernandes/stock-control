@@ -26,8 +26,8 @@ export class ProductService {
     return this.httpService.update(id, request);
   }
 
-  remove(id: string): Observable<boolean> {
-    return this.repository.remove(id);
+  remove(id: string): Observable<void> {
+    return this.httpService.remove(id);
   }
 
   toggleActive(id: string): Observable<Product | undefined> {

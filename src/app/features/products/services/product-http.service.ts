@@ -27,4 +27,8 @@ export class ProductHttpService {
   toggleActive(id: string): Observable<Product> {
     return this.http.patch<Product>(`${this.apiUrl}/${id}/active`, null);
   }
+
+  remove(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }
