@@ -11,6 +11,7 @@ import { ProductStore } from '../../store/product.store';
 import { ConfirmDialog } from '../../../../shared/ui/confirm-dialog/confirm-dialog';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { EmptyState } from '../../../../shared/components/empty-state/empty-state';
+import { finalize } from 'rxjs';
 
 type ProductFilter = 'all' | 'active' | 'inactive';
 type ProductSort =
@@ -55,6 +56,7 @@ export class ProductList {
   readonly searchTerm = signal('');
   readonly hasSearchTerm = computed(() => this.searchTerm().trim().length > 0);
   readonly sort = signal<ProductSort>('name-asc');
+  readonly deleting = signal(false);
 
   editProduct(productId: string): void {
     this.router.navigate(['products', productId, 'edit']);
@@ -87,24 +89,38 @@ export class ProductList {
   }
 
   cancelDelete(): void {
+    if (this.deleting()) {
+      return;
+    }
     this.productToDelete.set(null);
   }
 
   confirmDelete(): void {
     const product = this.productToDelete();
-    if (!product) return;
+    if (!product || this.deleting()) return;
 
-    this.productStore.remove(product.id).subscribe({
-      next: (removed) => {
-        if (!removed) return;
-        this.toastService.success(`Produto "${product.name}" excluído com sucesso.`);
-        this.productToDelete.set(null);
-      },
-      error: (error) => {
-        this.toastService.error('Não foi possível excluir o produto.');
-        console.error('Erro ao excluir o produto:', error);
-      },
-    });
+    this.deleting.set(true);
+
+    this.productStore
+      .remove(product.id)
+      .pipe(
+        finalize(() => {
+          this.deleting.set(false);
+        })
+      )
+      .subscribe({
+        next: (removed) => {
+          if (!removed) {
+            return;
+          }
+          this.toastService.success(`Produto "${product.name}" excluído com sucesso.`);
+          this.productToDelete.set(null);
+        },
+        error: (error) => {
+          this.toastService.error('Erro ao excluir o produto.');
+          console.error('Erro ao excluir o produto:', error);
+        },
+      });
   }
 
   readonly filteredProducts = computed(() => {

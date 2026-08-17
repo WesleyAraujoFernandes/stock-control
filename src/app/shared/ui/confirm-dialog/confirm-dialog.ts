@@ -15,8 +15,9 @@ import {
   styleUrl: './confirm-dialog.css',
 })
 export class ConfirmDialog {
-  readonly title = input('Confirmar ação');
+  readonly title = input('Confirmar ação');
   readonly message = input.required<string>();
+  readonly loading = input(false);
 
   readonly confirmed = output<void>();
   readonly cancelled = output<void>();
@@ -28,10 +29,18 @@ export class ConfirmDialog {
   readonly actionsClasses = DIALOG_ACTIONS_CLASSES;
 
   confirm(): void {
+    if (this.loading()) {
+      return;
+    }
+
     this.confirmed.emit();
   }
 
   cancel(): void {
+    if (this.loading()) {
+      return;
+    }
+
     this.cancelled.emit();
   }
 }

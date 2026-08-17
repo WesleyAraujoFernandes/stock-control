@@ -18,6 +18,16 @@
         <div class="flex items-center justify-center py-12">
           <p class="text-slate-500">Carregando produtos...</p>
         </div>
+        } @else if (store.error()) {
+        <div class="flex flex-col items-center justify-center gap-4 py-12">
+          <p class="text-red-600">
+            {{ store.error() }}
+          </p>
+
+          <app-button variant="secondary" type="button" (click)="store.load()">
+            Tentar novamente
+          </app-button>
+        </div>
         } @else if (store.hasProducts()) {
         <app-product-list [products]="store.products()" />
         } @else {

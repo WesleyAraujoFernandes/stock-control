@@ -1,3 +1,4 @@
+import { ProductHttpService } from './product-http.service';
 import { inject, Injectable } from '@angular/core';
 import { Product } from '../models/product.model';
 import { CreateProductRequest } from '../models/create-product.request';
@@ -12,13 +13,14 @@ export class ProductService {
   constructor() {}
 
   private readonly repository = inject(ProductRepository);
+  private readonly httpService = inject(ProductHttpService);
 
   create(request: CreateProductRequest): Observable<Product> {
     return this.repository.create(request);
   }
 
   getProducts(): Observable<Product[]> {
-    return this.repository.getProducts();
+    return this.httpService.getProducts();
   }
   update(id: string, request: UpdateProductRequest): Observable<Product | undefined> {
     return this.repository.update(id, request);

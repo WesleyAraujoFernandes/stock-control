@@ -1,11 +1,14 @@
-import { CreateProductRequest } from './../../models/create-product.request';
-import { UpdateProductRequest } from './../../models/update-product.request';
-import { Component, inject, input, output, effect } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { finalize } from 'rxjs';
+
 import { Button } from '../../../../shared/ui/button/button/button';
-import { ERROR_CLASSES, FORM_FIELD_CLASSES, LABEL_CLASSES } from './product-form.style';
 import { ProductStore } from '../../store/product.store';
 import { Product } from '../../models/product.model';
+import { CreateProductRequest } from '../../models/create-product.request';
+import { UpdateProductRequest } from '../../models/update-product.request';
+
+import { ERROR_CLASSES, FORM_FIELD_CLASSES, LABEL_CLASSES } from './product-form.style';
 
 @Component({
   selector: 'app-product-form',
@@ -16,13 +19,17 @@ import { Product } from '../../models/product.model';
 export class ProductForm {
   private readonly productStore = inject(ProductStore);
   private readonly fb = inject(FormBuilder);
+
   readonly fieldClasses = FORM_FIELD_CLASSES;
   readonly labelClasses = LABEL_CLASSES;
   readonly errorClasses = ERROR_CLASSES;
+
   readonly saved = output<Product>();
-  readonly initialValue = input<Product | null>(null);
   readonly saveError = output<string>();
   readonly cancelled = output<void>();
+
+  readonly initialValue = input<Product | null>(null);
+  readonly saving = signal(false);
 
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(120)]],
@@ -38,6 +45,7 @@ export class ProductForm {
 
   private readonly initializeForm = effect(() => {
     const product = this.initialValue();
+
     if (!product) {
       return;
     }
@@ -56,17 +64,34 @@ export class ProductForm {
   });
 
   save(): void {
-    if (this.form.invalid) {
+    if (this.form.invalid || this.saving()) {
       this.form.markAllAsTouched();
       return;
     }
 
+    this.saving.set(true);
+
     const product = this.initialValue();
 
     if (product) {
-      const request: UpdateProductRequest = this.form.getRawValue();
+      this.updateProduct(product);
+      return;
+    }
 
-      this.productStore.update(product.id, request).subscribe({
+    this.createProduct();
+  }
+
+  private updateProduct(product: Product): void {
+    const request: UpdateProductRequest = this.form.getRawValue();
+
+    this.productStore
+      .update(product.id, request)
+      .pipe(
+        finalize(() => {
+          this.saving.set(false);
+        })
+      )
+      .subscribe({
         next: (updatedProduct) => {
           if (!updatedProduct) {
             return;
@@ -78,20 +103,26 @@ export class ProductForm {
           this.saveError.emit('Não foi possível atualizar o produto: ' + error);
         },
       });
+  }
 
-      return;
-    }
-
+  private createProduct(): void {
     const request: CreateProductRequest = this.form.getRawValue();
 
-    this.productStore.create(request).subscribe({
-      next: (createdProduct) => {
-        this.saved.emit(createdProduct);
-      },
-      error: (error) => {
-        this.saveError.emit('Não foi possível criar o produto: ' + error);
-      },
-    });
+    this.productStore
+      .create(request)
+      .pipe(
+        finalize(() => {
+          this.saving.set(false);
+        })
+      )
+      .subscribe({
+        next: (createdProduct) => {
+          this.saved.emit(createdProduct);
+        },
+        error: (error) => {
+          this.saveError.emit('Não foi possível criar o produto: ' + error);
+        },
+      });
   }
 
   onCancel(): void {
