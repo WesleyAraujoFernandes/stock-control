@@ -6,8 +6,6 @@ import {
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { ProductRepository } from './features/products/repositories/product.repository';
-import { LocalStorageProductRepository } from './features/products/repositories/local-storage-product.repository';
 import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
@@ -15,10 +13,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
-    {
-      provide: ProductRepository,
-      useExisting: LocalStorageProductRepository,
-    },
+    provideRouter(routes)
   ],
 };

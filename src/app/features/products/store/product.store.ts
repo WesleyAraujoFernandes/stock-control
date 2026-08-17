@@ -50,14 +50,12 @@ export class ProductStore {
   }
 
   create(request: CreateProductRequest): Observable<Product> {
-    this.error.set(null);
     return this.productService.create(request).pipe(
-      tap((newProduct) => {
-        this.products.update((products) => [...products, newProduct]);
-      }),
-      catchError((error) => {
-        this.error.set('Não foi possível criar o produto: ' + error);
-        return throwError(() => error);
+      tap((createdProduct) => {
+        this.products.update((products) => [
+          ...products,
+          createdProduct,
+        ]);
       })
     );
   }
@@ -66,20 +64,13 @@ export class ProductStore {
     return this.products().find((product) => product.id === id);
   }
 
-  update(id: string, request: UpdateProductRequest): Observable<Product | undefined> {
+  update(id: string, request: UpdateProductRequest): Observable<Product> {
     this.error.set(null);
     return this.productService.update(id, request).pipe(
       tap((updatedProduct) => {
-        if (!updatedProduct) {
-          return;
-        }
-        this.products.update((product) =>
-          product.map((product) => (product.id === id ? updatedProduct : product))
+        this.products.update((products) =>
+          products.map((product) => (product.id === id ? updatedProduct : product))
         );
-      }),
-      catchError((error) => {
-        this.error.set('Não foi possível atualizar o produto: ' + error);
-        return throwError(() => error);
       })
     );
   }

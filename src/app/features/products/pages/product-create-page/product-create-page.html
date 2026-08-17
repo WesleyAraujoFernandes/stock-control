@@ -10,6 +10,6 @@
     </div>
   </app-page-header>
   <app-page-content>
-    <app-product-form (saved)="onProductSaved($event)" />
+    <app-product-form (saved)="onProductSaved($event)" (saveError)="onSaveError($event)" />
   </app-page-content>
 </app-page>

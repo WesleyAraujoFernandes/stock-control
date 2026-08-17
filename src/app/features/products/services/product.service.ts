@@ -3,8 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Product } from '../models/product.model';
 import { CreateProductRequest } from '../models/create-product.request';
 import { UpdateProductRequest } from '../models/update-product.request';
-import { ProductRepository } from '../repositories/product.repository';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +11,6 @@ import { Observable, of } from 'rxjs';
 export class ProductService {
   constructor() {}
 
-  private readonly repository = inject(ProductRepository);
   private readonly httpService = inject(ProductHttpService);
 
   create(request: CreateProductRequest): Observable<Product> {
@@ -22,7 +20,7 @@ export class ProductService {
   getProducts(): Observable<Product[]> {
     return this.httpService.getProducts();
   }
-  update(id: string, request: UpdateProductRequest): Observable<Product | undefined> {
+  update(id: string, request: UpdateProductRequest): Observable<Product> {
     return this.httpService.update(id, request);
   }
 

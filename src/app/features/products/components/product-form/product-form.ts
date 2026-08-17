@@ -1,6 +1,7 @@
 import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { Button } from '../../../../shared/ui/button/button/button';
 import { ProductStore } from '../../store/product.store';
@@ -100,7 +101,7 @@ export class ProductForm {
           this.saved.emit(updatedProduct);
         },
         error: (error) => {
-          this.saveError.emit('Não foi possível atualizar o produto: ' + error.message);
+          this.saveError.emit(this.getSaveErrorMessage(error));
         },
       });
   }
@@ -120,12 +121,30 @@ export class ProductForm {
           this.saved.emit(createdProduct);
         },
         error: (error) => {
-          this.saveError.emit('Não foi possível criar o produto: ' + error);
+          this.saveError.emit(this.getSaveErrorMessage(error));
         },
       });
   }
 
   onCancel(): void {
     this.cancelled.emit();
+  }
+
+  private getSaveErrorMessage(error: unknown): string {
+    if (error instanceof HttpErrorResponse) {
+      if (error.status === 409) {
+        return 'Já existe um producto cadastrado com esse SKU.'
+      }
+      if (error.status === 400) {
+        return 'Os dados informados são inválidos.'
+      }
+      if (error.status === 404) {
+        return 'Nenhum produto não foi encontrado'
+      }
+      if (error.status >= 500) {
+        return 'Ocorreu um erro no servidor. Tente novamente mais tarde.'
+      }
+    }
+    return 'Não foi possível salvar o produto.'
   }
 }

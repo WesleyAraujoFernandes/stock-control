@@ -20,4 +20,8 @@ export class ProductCreatePage {
     this.toastService.success(`Produto "${_product.name}" criado com sucesso`);
     this.router.navigate(['/products']);
   }
+
+  onSaveError(message: string): void {
+    this.toastService.error(message);
+  }
 }
