@@ -16,7 +16,7 @@ export class ProductService {
   private readonly httpService = inject(ProductHttpService);
 
   create(request: CreateProductRequest): Observable<Product> {
-    return this.repository.create(request);
+    return this.httpService.create(request);
   }
 
   getProducts(): Observable<Product[]> {
