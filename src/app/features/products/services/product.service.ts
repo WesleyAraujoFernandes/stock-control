@@ -23,7 +23,7 @@ export class ProductService {
     return this.httpService.getProducts();
   }
   update(id: string, request: UpdateProductRequest): Observable<Product | undefined> {
-    return this.repository.update(id, request);
+    return this.httpService.update(id, request);
   }
 
   remove(id: string): Observable<boolean> {

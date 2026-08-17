@@ -100,7 +100,7 @@ export class ProductForm {
           this.saved.emit(updatedProduct);
         },
         error: (error) => {
-          this.saveError.emit('Não foi possível atualizar o produto: ' + error);
+          this.saveError.emit('Não foi possível atualizar o produto: ' + error.message);
         },
       });
   }
