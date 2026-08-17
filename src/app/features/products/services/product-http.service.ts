@@ -23,4 +23,8 @@ export class ProductHttpService {
   update(id: string, request: UpdateProductRequest): Observable<Product> {
     return this.http.put<Product>(`${this.apiUrl}/${id}`, request);
   }
+
+  toggleActive(id: string): Observable<Product> {
+    return this.http.patch<Product>(`${this.apiUrl}/${id}/active`, null);
+  }
 }

@@ -31,22 +31,6 @@ export class ProductService {
   }
 
   toggleActive(id: string): Observable<Product | undefined> {
-    const product = this.repository.getById(id);
-
-    if (!product) {
-      return of(undefined);
-    }
-
-    const newActive = !product.active;
-
-    return this.repository.update(id, {
-      name: product.name,
-      sku: product.sku,
-      category: product.category,
-      quantity: product.quantity,
-      minimumStock: product.minimumStock,
-      unitPrice: product.unitPrice,
-      active: !product.active,
-    });
+    return this.httpService.toggleActive(id);
   }
 }

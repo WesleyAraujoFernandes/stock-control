@@ -106,7 +106,7 @@ export class ProductStore {
         if (!updatedProduct) {
           return;
         }
-
+        console.log("update active:", updatedProduct.active);
         this.products.update((products) =>
           products.map((product) => (product.id === id ? updatedProduct : product))
         );
