@@ -8,6 +8,7 @@ import { ProductStore } from '../../store/product.store';
 import { Product } from '../../models/product.model';
 import { CreateProductRequest } from '../../models/create-product.request';
 import { UpdateProductRequest } from '../../models/update-product.request';
+import { ApiError } from '../../../../core/errors/api-error';
 
 import { ERROR_CLASSES, FORM_FIELD_CLASSES, LABEL_CLASSES } from './product-form.style';
 
@@ -131,20 +132,19 @@ export class ProductForm {
   }
 
   private getSaveErrorMessage(error: unknown): string {
-    if (error instanceof HttpErrorResponse) {
-      if (error.status === 409) {
-        return 'Já existe um producto cadastrado com esse SKU.'
-      }
-      if (error.status === 400) {
-        return 'Os dados informados são inválidos.'
-      }
-      if (error.status === 404) {
-        return 'Nenhum produto não foi encontrado'
-      }
-      if (error.status >= 500) {
-        return 'Ocorreu um erro no servidor. Tente novamente mais tarde.'
-      }
+    if (this.isApiError(error)) {
+      return error.message;
     }
-    return 'Não foi possível salvar o produto.'
+
+    return 'Não foi possível salvar o produto.';
+  }
+
+  private isApiError(error: unknown): error is ApiError {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'status' in error &&
+      'message' in error
+    );
   }
 }
