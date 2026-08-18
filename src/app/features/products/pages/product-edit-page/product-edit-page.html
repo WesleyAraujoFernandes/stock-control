@@ -15,7 +15,7 @@
           [initialValue]="product"
           (saved)="onProductSaved($event)"
           (saveError)="onSaveError($event)"
-          (cancelled)="onCancel()"
+          (cancelled)="backToProducts()"
         />
         } @else {
         <app-empty-state>

@@ -11,6 +11,7 @@ export class ApiErrorService {
     return {
       status: error.status,
       message: this.extractMessage(error),
+      error: error.error?.error ?? 'Unknow Error',
       timestamp: error.error?.timestamp,
       path: error.error?.path,
     };

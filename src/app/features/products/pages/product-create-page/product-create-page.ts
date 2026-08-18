@@ -24,4 +24,8 @@ export class ProductCreatePage {
   onSaveError(message: string): void {
     this.toastService.error(message);
   }
+
+  onCancelled(): void {
+    this.router.navigate(['/products']);
+  }
 }
