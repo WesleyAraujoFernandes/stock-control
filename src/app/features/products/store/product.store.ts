@@ -98,15 +98,21 @@ export class ProductStore {
   }
 
   remove(id: string): Observable<void> {
+    this.saving.set(true);
+    this.saveError.set(null);
+
     return this.productService.remove(id).pipe(
       tap(() => {
         this.products.update((products) => products.filter((product) => product.id !== id));
       }),
-      catchError((error) => {
-        this.error.set('Não foi possível remover o produto: ' + error);
+      catchError((error: ApiError) => {
+        this.saveError.set(error.message);
         return throwError(() => error);
+      }),
+      finalize(() => {
+        this.saving.set(false);
       })
-    );
+    )
   }
 
   toggleActive(id: string): Observable<Product | undefined> {

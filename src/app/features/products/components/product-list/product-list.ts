@@ -109,14 +109,9 @@ export class ProductList {
         );
       },
 
-      error: (error) => {
+      error: (error: ApiError) => {
         this.toastService.error(
-          'Não foi possível excluir o produto.'
-        );
-
-        console.error(
-          'Erro ao excluir produto:',
-          error
+          error.message
         );
       },
     });
