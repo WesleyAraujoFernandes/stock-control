@@ -23,6 +23,8 @@ export class ProductStore {
   readonly hasProducts = computed(() => this.totalProducts() > 0);
   readonly error = signal<string | null>(null);
   readonly loading = signal(false);
+  readonly saving = signal(false);
+  readonly saveError = signal<string | null>(null);
 
   constructor() {
     this.load();
@@ -49,12 +51,21 @@ export class ProductStore {
   }
 
   create(request: CreateProductRequest): Observable<Product> {
+    this.saving.set(true);
+    this.saveError.set(null);
     return this.productService.create(request).pipe(
       tap((createdProduct) => {
         this.products.update((products) => [
           ...products,
           createdProduct,
         ]);
+      }),
+      catchError((error: ApiError) => {
+        this.saveError.set(error.message);
+        return throwError(() => error);
+      }),
+      finalize(() => {
+        this.saving.set(false);
       })
     );
   }
@@ -64,12 +75,24 @@ export class ProductStore {
   }
 
   update(id: string, request: UpdateProductRequest): Observable<Product> {
-    this.error.set(null);
+    this.saving.set(true);
+    this.saveError.set(null);
+
     return this.productService.update(id, request).pipe(
       tap((updatedProduct) => {
+        if (!updatedProduct) {
+          return;
+        }
         this.products.update((products) =>
           products.map((product) => (product.id === id ? updatedProduct : product))
         );
+      }),
+      catchError((error: ApiError) => {
+        this.saveError.set(error.message);
+        return throwError(() => error);
+      }),
+      finalize(() => {
+        this.saving.set(false);
       })
     );
   }
