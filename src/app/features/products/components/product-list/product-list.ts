@@ -11,7 +11,6 @@ import { ProductStore } from '../../store/product.store';
 import { ConfirmDialog } from '../../../../shared/ui/confirm-dialog/confirm-dialog';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { EmptyState } from '../../../../shared/components/empty-state/empty-state';
-import { finalize } from 'rxjs';
 
 type ProductFilter = 'all' | 'active' | 'inactive';
 type ProductSort =

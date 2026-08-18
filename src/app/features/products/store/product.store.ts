@@ -4,13 +4,13 @@ import { ProductService } from '../services/product.service';
 import { CreateProductRequest } from '../models/create-product.request';
 import {
   catchError,
-  delay,
   finalize,
   Observable,
   tap,
   throwError,
 } from 'rxjs';
 import { UpdateProductRequest } from '../models/update-product.request';
+import { ApiError } from '../../../core/errors/api-error';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +34,6 @@ export class ProductStore {
     this.productService
       .getProducts()
       .pipe(
-        delay(1000),
         finalize(() => {
           this.loading.set(false);
         })
@@ -43,8 +42,8 @@ export class ProductStore {
         next: (products) => {
           this.products.set(products);
         },
-        error: () => {
-          this.error.set('Não foi possível carregar os produtos.');
+        error: (error: ApiError) => {
+          this.error.set(error.message);
         },
       });
   }
