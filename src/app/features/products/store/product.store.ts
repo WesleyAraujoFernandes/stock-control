@@ -110,12 +110,14 @@ export class ProductStore {
   }
 
   toggleActive(id: string): Observable<Product | undefined> {
+    this.saving.set(true);
+    this.saveError.set(null);
     return this.productService.toggleActive(id).pipe(
       tap((updatedProduct) => {
         if (!updatedProduct) {
           return;
         }
-        console.log("update active:", updatedProduct.active);
+
         this.products.update((products) =>
           products.map((product) => (product.id === id ? updatedProduct : product))
         );
@@ -123,6 +125,9 @@ export class ProductStore {
       catchError((error) => {
         this.error.set('Não foi possível alterar o status do produto: ' + error);
         return throwError(() => error);
+      }),
+      finalize(() => {
+        this.saving.set(false);
       })
     );
   }

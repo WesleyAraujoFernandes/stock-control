@@ -11,6 +11,7 @@ import { ProductStore } from '../../store/product.store';
 import { ConfirmDialog } from '../../../../shared/ui/confirm-dialog/confirm-dialog';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { EmptyState } from '../../../../shared/components/empty-state/empty-state';
+import { ApiError } from '../../../../core/errors/api-error';
 
 type ProductFilter = 'all' | 'active' | 'inactive';
 type ProductSort =
@@ -79,10 +80,8 @@ export class ProductList {
         this.toastService.success(`Produto "${updatedProduct.name}" ${status} com sucesso.`);
       },
 
-      error: (error) => {
-        this.toastService.error('Erro ao alterar o status do produto.');
-
-        console.error('Erro ao alterar status do produto:', error);
+      error: (error: ApiError) => {
+        this.toastService.error(error.message);
       },
     });
   }
