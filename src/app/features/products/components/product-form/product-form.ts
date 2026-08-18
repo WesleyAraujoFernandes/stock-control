@@ -88,23 +88,14 @@ export class ProductForm {
 
     this.productStore
       .update(product.id, request)
-      .pipe(
-        finalize(() => {
-          this.saving.set(false);
-        })
-      )
       .subscribe({
         next: (updatedProduct) => {
-          if (!updatedProduct) {
-            return;
-          }
-
           this.saved.emit(updatedProduct);
         },
-        error: (error) => {
-          this.saveError.emit(this.getSaveErrorMessage(error));
-        },
-      });
+        error: (error: ApiError) => {
+          this.saveError.emit(error.message);
+        }
+      })
   }
 
   private createProduct(): void {
@@ -112,19 +103,14 @@ export class ProductForm {
 
     this.productStore
       .create(request)
-      .pipe(
-        finalize(() => {
-          this.saving.set(false);
-        })
-      )
       .subscribe({
         next: (createdProduct) => {
           this.saved.emit(createdProduct);
         },
-        error: (error) => {
-          this.saveError.emit(this.getSaveErrorMessage(error));
-        },
-      });
+        error: (error: ApiError) => {
+          this.saveError.emit(error.message);
+        }
+      })
   }
 
   onCancel(): void {
