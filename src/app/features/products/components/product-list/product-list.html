@@ -5,14 +5,9 @@
     </label>
 
     <div class="flex items-center gap-2">
-      <input
-        id="product-search"
-        type="text"
-        placeholder="Nome ou SKU"
-        [value]="searchTerm()"
+      <input id="product-search" type="text" placeholder="Nome ou SKU" [value]="searchTerm()"
         (input)="setSearchTerm($any($event.target).value)"
-        class="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
-      />
+        class="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
 
       @if (hasSearchTerm()) {
       <app-button variant="secondary" type="button" (click)="clearSearch()"> Limpar </app-button>
@@ -20,30 +15,18 @@
     </div>
   </div>
   <div class="flex gap-2">
-    <app-button
-      size="sm"
-      [variant]="filter() === 'all' ? 'primary' : 'secondary'"
-      type="button"
-      (click)="setFilter('all')"
-    >
+    <app-button size="sm" [variant]="filter() === 'all' ? 'primary' : 'secondary'" type="button"
+      (click)="setFilter('all')">
       Todos ({{ products().length }})
     </app-button>
 
-    <app-button
-      size="sm"
-      [variant]="filter() === 'active' ? 'primary' : 'secondary'"
-      type="button"
-      (click)="setFilter('active')"
-    >
+    <app-button size="sm" [variant]="filter() === 'active' ? 'primary' : 'secondary'" type="button"
+      (click)="setFilter('active')">
       Ativos ({{ totalActiveProduct() }})
     </app-button>
 
-    <app-button
-      size="sm"
-      [variant]="filter() === 'inactive' ? 'primary' : 'secondary'"
-      type="button"
-      (click)="setFilter('inactive')"
-    >
+    <app-button size="sm" [variant]="filter() === 'inactive' ? 'primary' : 'secondary'" type="button"
+      (click)="setFilter('inactive')">
       Inativos ({{ totalInactiveProduct() }})
     </app-button>
   </div>
@@ -85,15 +68,11 @@
       </p>
 
       @if (getStockStatus(product) === 'low') {
-      <span
-        class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-red-700"
-      >
+      <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-red-700">
         Estoque baixo
       </span>
       } @else {
-      <span
-        class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-green-700"
-      >
+      <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-green-700">
         Estoque suficiente
       </span>
       }
@@ -106,32 +85,44 @@
 
     <app-card-footer>
       <div>
-        <app-button variant="secondary" size="sm" (click)="toggleActive(product.id)">
+        <app-button variant="secondary" type="button" [disabled]="togglingProductId() === product.id" size="sm"
+          (click)="toggleActive(product.id)">
+          @if (togglingProductId() === product.id) {
+          {{ product.active ? "Desativando..." : "Ativando..." }}
+          } @else {
           {{ product.active ? 'Desativar' : 'Ativar' }}
+          }
         </app-button>
       </div>
 
       <div class="flex justify-end gap-2">
         <app-button variant="secondary" (click)="editProduct(product.id)"> Editar </app-button>
 
-        <app-button variant="danger" (click)="removeProduct(product.id)"> Excluir </app-button>
+        <app-button
+          variant="danger"
+          (click)="removeProduct(product.id)"
+          type="button"
+          [disabled]="deletingProductId() === product.id"
+          >
+          @if (deletingProductId() === product.id) {
+            Excluindo...
+          } @else {
+            Excluir
+          }
+        </app-button>
       </div>
     </app-card-footer>
   </app-card>
   <br />
-  } } @else {
+  }} @else {
   <app-empty-state>
     @if (hasSearchTerm()) { Nenhum produto encontrado para "{{ searchTerm() }}". } @else if
     (filter() === 'all') { Nenhum produto cadastrado. } @else if (filter() === 'active') { Nenhum
     produto ativo. } @else { Nenhum produto inativo. }
   </app-empty-state>
   } @if (productToDelete(); as product) {
-  <app-confirm-dialog
-    title="Excluir produto"
-    message="Tem certeza que deseja excluir o produto &quot;{{ product.name }}&quot;?"
-    [loading]="deleting()"
-    (confirmed)="confirmDelete()"
-    (cancelled)="cancelDelete()"
-  />
+  <app-confirm-dialog title="Excluir produto"
+    message="Tem certeza que deseja excluir o produto &quot;{{ product.name }}&quot;?" [loading]="deletingProductId() === productToDelete()?.id"
+    (confirmed)="confirmDelete()" (cancelled)="cancelDelete()" />
   }
 </div>

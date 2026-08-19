@@ -57,6 +57,8 @@ export class ProductList {
   readonly hasSearchTerm = computed(() => this.searchTerm().trim().length > 0);
   readonly sort = signal<ProductSort>('name-asc');
   readonly deleting = signal(false);
+  readonly togglingProductId = this.productStore.togglingProductId;
+  readonly deletingProductId = this.productStore.deletingProductId;
 
   editProduct(productId: string): void {
     this.router.navigate(['products', productId, 'edit']);

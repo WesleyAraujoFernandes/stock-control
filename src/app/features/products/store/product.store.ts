@@ -25,6 +25,8 @@ export class ProductStore {
   readonly loading = signal(false);
   readonly saving = signal(false);
   readonly saveError = signal<string | null>(null);
+  readonly togglingProductId = signal<string | null>(null);
+  readonly deletingProductId = signal<string | null>(null);
 
   constructor() {
     this.load();
@@ -98,26 +100,20 @@ export class ProductStore {
   }
 
   remove(id: string): Observable<void> {
-    this.saving.set(true);
-    this.saveError.set(null);
+    this.deletingProductId.set(id);
 
     return this.productService.remove(id).pipe(
       tap(() => {
         this.products.update((products) => products.filter((product) => product.id !== id));
       }),
-      catchError((error: ApiError) => {
-        this.saveError.set(error.message);
-        return throwError(() => error);
-      }),
       finalize(() => {
-        this.saving.set(false);
+        this.deletingProductId.set(null);
       })
     )
   }
 
   toggleActive(id: string): Observable<Product | undefined> {
-    this.saving.set(true);
-    this.saveError.set(null);
+    this.togglingProductId.set(id);
     return this.productService.toggleActive(id).pipe(
       tap((updatedProduct) => {
         if (!updatedProduct) {
@@ -128,12 +124,8 @@ export class ProductStore {
           products.map((product) => (product.id === id ? updatedProduct : product))
         );
       }),
-      catchError((error) => {
-        this.error.set('Não foi possível alterar o status do produto: ' + error);
-        return throwError(() => error);
-      }),
       finalize(() => {
-        this.saving.set(false);
+        this.togglingProductId.set(null);
       })
     );
   }
