@@ -11,9 +11,9 @@ describe('Sidebar', () => {
       imports: [Sidebar]
     })
     .compileComponents();
-
     fixture = TestBed.createComponent(Sidebar);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('expanded', true);
     fixture.detectChanges();
   });
 

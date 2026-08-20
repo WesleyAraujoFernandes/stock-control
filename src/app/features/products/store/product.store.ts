@@ -26,7 +26,9 @@ export class ProductStore {
   readonly saving = signal(false);
   readonly saveError = signal<string | null>(null);
   readonly togglingProductId = signal<string | null>(null);
+  readonly toggleError = signal<string | null>(null);
   readonly deletingProductId = signal<string | null>(null);
+  readonly deleteError = signal<string | null>(null);
 
   constructor() {
     this.load();
@@ -56,10 +58,10 @@ export class ProductStore {
     this.saving.set(true);
     this.saveError.set(null);
     return this.productService.create(request).pipe(
-      tap((createdProduct) => {
+      tap((newProduct) => {
         this.products.update((products) => [
           ...products,
-          createdProduct,
+          newProduct,
         ]);
       }),
       catchError((error: ApiError) => {
@@ -101,10 +103,14 @@ export class ProductStore {
 
   remove(id: string): Observable<void> {
     this.deletingProductId.set(id);
-
+    this.deleteError.set(null);
     return this.productService.remove(id).pipe(
       tap(() => {
         this.products.update((products) => products.filter((product) => product.id !== id));
+      }),
+      catchError((error: ApiError) => {
+        this.deleteError.set(error.message);
+        return throwError(() => error);
       }),
       finalize(() => {
         this.deletingProductId.set(null);
@@ -114,6 +120,7 @@ export class ProductStore {
 
   toggleActive(id: string): Observable<Product | undefined> {
     this.togglingProductId.set(id);
+    this.toggleError.set(null);
     return this.productService.toggleActive(id).pipe(
       tap((updatedProduct) => {
         if (!updatedProduct) {
@@ -123,6 +130,10 @@ export class ProductStore {
         this.products.update((products) =>
           products.map((product) => (product.id === id ? updatedProduct : product))
         );
+      }),
+      catchError((error: ApiError) => {
+        this.toggleError.set(error.message);
+        return throwError(() => error);
       }),
       finalize(() => {
         this.togglingProductId.set(null);

@@ -5,5 +5,5 @@ export interface CreateProductRequest {
   quantity: number;
   minimumStock: number;
   unitPrice: number;
-  //active: boolean;
+  active: boolean;
 }

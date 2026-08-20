@@ -1,4 +1,4 @@
-import { ProductHttpService } from './product-http.service';
+import { ProductRepository } from '../repositories/product-repository';
 import { inject, Injectable } from '@angular/core';
 import { Product } from '../models/product.model';
 import { CreateProductRequest } from '../models/create-product.request';
@@ -11,24 +11,24 @@ import { Observable } from 'rxjs';
 export class ProductService {
   constructor() {}
 
-  private readonly httpService = inject(ProductHttpService);
+  private readonly productRepository = inject(ProductRepository);
 
   create(request: CreateProductRequest): Observable<Product> {
-    return this.httpService.create(request);
+    return this.productRepository.create(request);
   }
 
   getProducts(): Observable<Product[]> {
-    return this.httpService.getProducts();
+    return this.productRepository.getProducts();
   }
   update(id: string, request: UpdateProductRequest): Observable<Product> {
-    return this.httpService.update(id, request);
+    return this.productRepository.update(id, request);
   }
 
   remove(id: string): Observable<void> {
-    return this.httpService.remove(id);
+    return this.productRepository.remove(id);
   }
 
   toggleActive(id: string): Observable<Product | undefined> {
-    return this.httpService.toggleActive(id);
+    return this.productRepository.toggleActive(id);
   }
 }

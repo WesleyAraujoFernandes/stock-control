@@ -9,27 +9,27 @@ import { environment } from '../../../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class ProductHttpService {
+export class ProductRepository {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiUrl}/api/products`;
+  private readonly endpoint = `${environment.apiUrl}/api/products`;
 
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(this.apiUrl);
+    return this.http.get<Product[]>(this.endpoint);
   }
 
   create(request: CreateProductRequest): Observable<Product> {
-    return this.http.post<Product>(this.apiUrl, request);
+    return this.http.post<Product>(this.endpoint, request);
   }
 
   update(id: string, request: UpdateProductRequest): Observable<Product> {
-    return this.http.put<Product>(`${this.apiUrl}/${id}`, request);
+    return this.http.put<Product>(`${this.endpoint}/${id}`, request);
   }
 
   toggleActive(id: string): Observable<Product> {
-    return this.http.patch<Product>(`${this.apiUrl}/${id}/active`, null);
+    return this.http.patch<Product>(`${this.endpoint}/${id}/active`, null);
   }
 
   remove(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.endpoint}/${id}`);
   }
 }

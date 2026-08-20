@@ -11,6 +11,7 @@ import { UpdateProductRequest } from '../../models/update-product.request';
 import { ApiError } from '../../../../core/errors/api-error';
 
 import { ERROR_CLASSES, FORM_FIELD_CLASSES, LABEL_CLASSES } from './product-form.style';
+import { ApiErrorMessageService } from '../../../../core/errors/api-error-message.service';
 
 @Component({
   selector: 'app-product-form',
@@ -21,6 +22,7 @@ import { ERROR_CLASSES, FORM_FIELD_CLASSES, LABEL_CLASSES } from './product-form
 export class ProductForm {
   private readonly productStore = inject(ProductStore);
   private readonly fb = inject(FormBuilder);
+  private readonly apiErrorMessageService = inject(ApiErrorMessageService);
 
   readonly fieldClasses = FORM_FIELD_CLASSES;
   readonly labelClasses = LABEL_CLASSES;
@@ -93,7 +95,9 @@ export class ProductForm {
           this.saved.emit(updatedProduct);
         },
         error: (error: ApiError) => {
-          this.saveError.emit(error.message);
+          this.saveError.emit(
+            this.apiErrorMessageService.getMessage(error)
+          );
         }
       })
   }
@@ -108,21 +112,15 @@ export class ProductForm {
           this.saved.emit(createdProduct);
         },
         error: (error: ApiError) => {
-          this.saveError.emit(error.message);
+          this.saveError.emit(
+            this.apiErrorMessageService.getMessage(error)
+          )
         }
       })
   }
 
   onCancel(): void {
     this.cancelled.emit();
-  }
-
-  private getSaveErrorMessage(error: unknown): string {
-    if (this.isApiError(error)) {
-      return error.message;
-    }
-
-    return 'Não foi possível salvar o produto.';
   }
 
   private isApiError(error: unknown): error is ApiError {

@@ -12,6 +12,7 @@ import { ConfirmDialog } from '../../../../shared/ui/confirm-dialog/confirm-dial
 import { ToastService } from '../../../../shared/services/toast.service';
 import { EmptyState } from '../../../../shared/components/empty-state/empty-state';
 import { ApiError } from '../../../../core/errors/api-error';
+import { ApiErrorMessageService } from '../../../../core/errors/api-error-message.service';
 
 type ProductFilter = 'all' | 'active' | 'inactive';
 type ProductSort =
@@ -42,6 +43,7 @@ export class ProductList {
   private readonly router = inject(Router);
   private readonly productStore = inject(ProductStore);
   private readonly toastService = inject(ToastService);
+  private readonly apiErrorMessageService = inject(ApiErrorMessageService);
   readonly products = input.required<Product[]>();
   readonly productToDelete = signal<Product | null>(null);
   readonly filter = signal<ProductFilter>('all');
@@ -83,7 +85,9 @@ export class ProductList {
       },
 
       error: (error: ApiError) => {
-        this.toastService.error(error.message);
+        this.toastService.error(
+          this.apiErrorMessageService.getMessage(error)
+        );
       },
     });
   }
@@ -113,7 +117,7 @@ export class ProductList {
 
       error: (error: ApiError) => {
         this.toastService.error(
-          error.message
+          this.apiErrorMessageService.getMessage(error)
         );
       },
     });
