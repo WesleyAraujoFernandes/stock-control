@@ -9,17 +9,17 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ProductService {
-  constructor() {}
 
   private readonly productRepository = inject(ProductRepository);
+
+  getProducts(): Observable<Product[]> {
+    return this.productRepository.getProducts();
+  }
 
   create(request: CreateProductRequest): Observable<Product> {
     return this.productRepository.create(request);
   }
 
-  getProducts(): Observable<Product[]> {
-    return this.productRepository.getProducts();
-  }
   update(id: string, request: UpdateProductRequest): Observable<Product> {
     return this.productRepository.update(id, request);
   }
