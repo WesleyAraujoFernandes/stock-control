@@ -329,4 +329,108 @@ describe('ProductStore', () => {
     expect(store.deleteError()).toBe(error.message);
     expect(store.deletingProductId()).toBeNull();
   })
+
+  it('deve manter saving ativo enquanto a criação estiver em andamento', () => {
+    store = TestBed.inject(ProductStore);
+    const request: CreateProductRequest = {
+      name: 'Notebook',
+      sku: 'NOTE-001',
+      category: 'Eletrônicos',
+      quantity: 10,
+      minimumStock: 2,
+      unitPrice: 3500,
+      active: true
+    };
+    const response$ = new Subject<Product>();
+    productService.create.and.returnValue(response$);
+    const subscription = store.create(request).subscribe();
+    expect(store.saving()).toBeTrue();
+    expect(store.saveError()).toBeNull();
+    response$.next(product);
+    response$.complete();
+    expect(store.products()).toEqual([product]);
+    expect(store.saving()).toBeFalse();
+    subscription.unsubscribe();
+  })
+
+  it('deve manter saving ativo enquanto a atualização estiver em andamento', () => {
+    store = TestBed.inject(ProductStore);
+    store.products.set([product, secondProduct]);
+    const request: UpdateProductRequest = {
+      name: 'Notebook atualizado',
+      sku: 'NOTE-001',
+      category: 'Eletrônicos',
+      quantity: 15,
+      minimumStock: 2,
+      unitPrice: 3600,
+      active: true
+    }
+
+    const updatedProduct: Product = {
+      ...product,
+      name: 'Notebook atualizado',
+      quantity: 15,
+      unitPrice: 3600
+    }
+
+    const response$ = new Subject<Product>();
+
+    productService.update.and.returnValue(response$);
+
+    const subscription = store.update(product.id, request).subscribe();
+
+    expect(store.saving()).toBeTrue();
+    expect(store.saveError()).toBeNull();
+
+    response$.next(updatedProduct);
+    response$.complete();
+
+    expect(store.saving()).toBeFalse();
+    subscription.unsubscribe();
+  })
+
+  it('deve manter o produto identificado enquanto a alteração de status estiver em andamento', () => {
+    store = TestBed.inject(ProductStore);
+    store.products.set([product, secondProduct]);
+    const updateProduct: Product = {
+      ...product,
+      active: false
+    }
+    const response$ = new Subject<Product>();
+
+    productService.toggleActive.and.returnValue(response$);
+
+    const subscription = store.toggleActive(product.id).subscribe();
+
+    expect(store.togglingProductId()).toBe(product.id);
+    expect(store.toggleError()).toBeNull();
+
+    response$.next(updateProduct);
+    response$.complete();
+
+    expect(store.products()).toEqual([
+      updateProduct,
+      secondProduct
+    ])
+
+    expect(store.togglingProductId()).toBeNull();
+    subscription.unsubscribe();
+  })
+
+  it('deve manter o produto identificado enquanto a exclusão estiver em andamento', () => {
+    store = TestBed.inject(ProductStore);
+    store.products.set([product, secondProduct]);
+    const response$ = new Subject<void>();
+    productService.remove.and.returnValue(response$);
+    const subscription = store.remove(product.id).subscribe();
+    expect(store.deletingProductId()).toBe(product.id);
+    expect(store.deleteError()).toBeNull();
+    response$.next();
+    response$.complete();
+
+    expect(store.products()).toEqual([secondProduct]);
+    expect(store.deletingProductId()).toBeNull();
+
+    subscription.unsubscribe();
+  })
 });
