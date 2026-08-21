@@ -137,7 +137,7 @@ describe('ProductStore', () => {
       throwError(() => error)
     )
     store.create(request).subscribe({
-      error: () => {}
+      error: () => { }
     })
     expect(store.products()).toEqual([])
     expect(store.saveError()).toBe(error.message);
@@ -213,5 +213,120 @@ describe('ProductStore', () => {
     ])
     expect(store.deletingProductId()).toBeNull();
     expect(store.deleteError()).toBeNull();
+  })
+
+  it('deve armazenar o erro ao falhar na atualização', () => {
+    store = TestBed.inject(ProductStore);
+    store.products.set([product, secondProduct]);
+
+    const request: UpdateProductRequest = {
+      name: 'Notebook atualizado',
+      sku: 'NOTE-001',
+      category: 'Eletrônicos',
+      quantity: 15,
+      minimumStock: 2,
+      unitPrice: 3600,
+      active: true
+    };
+    const error: ApiError = {
+      status: 409,
+      error: 'PRODUCT_SKU_ALREADY_EXISTS',
+      message: 'Já existe um produto com este SKU.'
+    }
+
+    productService.update.and.returnValue(
+      throwError(() => error)
+    )
+
+    store.update(product.id, request).subscribe({
+      error: () => { }
+    });
+    expect(store.products()).toEqual([
+      product,
+      secondProduct
+    ]);
+
+    expect(store.saveError()).toBe(error.message);
+    expect(store.saving()).toBeFalse();
+  })
+
+  it('deve alterar o status do produto', () => {
+    store = TestBed.inject(ProductStore);
+    store.products.set([product, secondProduct]);
+    const updateProduct: Product = {
+      ...product,
+      active: false,
+    }
+    productService.toggleActive.and.returnValue(
+      of(updateProduct)
+    );
+    store.toggleActive(product.id).subscribe();
+    expect(productService.toggleActive).toHaveBeenCalledWith(
+      product.id
+    );
+    expect(store.products()).toEqual([
+      updateProduct,
+      secondProduct
+    ])
+    expect(store.togglingProductId()).toBeNull();
+    expect(store.toggleError()).toBeNull();
+  })
+
+  it('deve armazenar o erro ao falhar na alteração do status', () => {
+    store = TestBed.inject(ProductStore);
+    store.products.set([product, secondProduct]);
+    const error: ApiError = {
+      status: 500,
+      error: 'INTERNAL ERROR',
+      message: 'Não foi possível alterar o status do produto.'
+    }
+    productService.toggleActive.and.returnValue(
+      throwError(() => error)
+    )
+    store.toggleActive(product.id).subscribe({
+      error: () => { }
+    })
+    expect(store.products()).toEqual([
+      product,
+      secondProduct
+    ])
+    expect(store.toggleError()).toBe(error.message);
+    expect(store.togglingProductId()).toBeNull();
+  })
+
+  it('deve remover o produto do Store', () => {
+    store = TestBed.inject(ProductStore);
+    store.products.set([product, secondProduct]);
+    productService.remove.and.returnValue(of(void 0));
+    store.remove(product.id).subscribe();
+    expect(productService.remove).toHaveBeenCalledWith(
+      product.id
+    );
+    expect(store.products()).toEqual([
+      secondProduct
+    ])
+    expect(store.deletingProductId()).toBeNull();
+    expect(store.deleteError()).toBeNull();
+  })
+
+  it('deve armazenar o erro ao falhar na exclusão', () => {
+    store = TestBed.inject(ProductStore);
+    store.products.set([product, secondProduct]);
+    const error: ApiError = {
+      status: 500,
+      error: 'INTERNAL_ERROR',
+      message: 'Não foi possível excluir o produto.'
+    }
+    productService.remove.and.returnValue(
+      throwError(() => error)
+    )
+    store.remove(product.id).subscribe({
+      error: () => { }
+    })
+    expect(store.products()).toEqual([
+      product, secondProduct
+    ]);
+    expect(store.deleteError()).toBe(error.message);
+    expect(store.deletingProductId()).toBeNull();
   })
 });
