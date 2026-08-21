@@ -433,4 +433,28 @@ describe('ProductStore', () => {
 
     subscription.unsubscribe();
   })
+
+  it('deve retornar um produto pelo id', () => {
+    store = TestBed.inject(ProductStore);
+    store.products.set([product, secondProduct])
+    expect(store.getById(product.id)).toEqual(product);
+  })
+
+  it('deve retornar undefined quando o produto não existir', () => {
+    store = TestBed.inject(ProductStore);
+    store.products.set([product, secondProduct]);
+    expect(store.getById('999')).toBeUndefined();
+  })
+
+  it('deve calcular corretamente o total de produtos', () => {
+    store = TestBed.inject(ProductStore);
+
+    expect(store.totalProducts()).toBe(0);
+    expect(store.hasProducts()).toBeFalse();
+
+    store.products.set([product, secondProduct]);
+
+    expect(store.totalProducts()).toBe(2);
+    expect(store.hasProducts()).toBeTrue();
+  })
 });
